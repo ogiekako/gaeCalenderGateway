@@ -1,0 +1,37 @@
+<div class="rawMail">
+    <h2>Ical</h2>
+
+    <p>
+        You see all parsed events in the table below. Click to edit.
+    </p>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>id/uid</th>
+            <th>summary</th>
+            <th>start</th>
+            <th>end</th>
+            <th>location</th>
+            <th>organizer</th>
+            <th>description (preview)</th>
+            <th>status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="ical in list" ng-click="edit(ical.id)">
+            <td title="{{ical.id}} / {{ical.uId}}"><span class="glyphicon glyphicon-certificate"></span></td>
+            <td>{{ical.summary}}</td>
+            <td>{{ical.startTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td>{{ical.endTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+            <td>{{ical.location}}</td>
+            <td>{{ical.organizer}}</td>
+            <td>{{ical.description}}</td>
+            <td>{{ical.status}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p ng-if="list.length === 0" class="alert alert-info">
+        No parsed events found.
+    </p>
+</div>

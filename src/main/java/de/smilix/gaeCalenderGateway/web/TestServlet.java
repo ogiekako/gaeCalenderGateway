@@ -93,10 +93,10 @@ public class TestServlet extends HttpServlet {
     //    System.out.println("got cal: " + calendar);
 
 
-    Events allEvents = calendarSrv.events().list(calendarId).execute();
-    for (Event event : allEvents.getItems()) {
-      writer.print("<pre>" + event.toPrettyString() + "</pre><br>");
-    }
+      Events allEvents = calendarSrv.events().list(calendarId).execute();
+      for (Event event : allEvents.getItems()) {
+        writer.print("<pre>" + event.toPrettyString() + "</pre><br>");
+      }
 
     //    System.out.println("create new event");
     //    Event newEvent = new Event();

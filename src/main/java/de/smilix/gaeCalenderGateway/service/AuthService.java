@@ -21,10 +21,13 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.auth.oauth2.RefreshTokenRequest;
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -35,6 +38,7 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import de.smilix.gaeCalenderGateway.common.Utils;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 
 public class AuthService {
@@ -90,15 +94,49 @@ public class AuthService {
   public GoogleAuthorizationCodeFlow newFlow() throws IOException {
     return new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
             getClientCredential(), Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(
-            DATA_STORE_FACTORY).setAccessType("offline").build();
+            DATA_STORE_FACTORY).setAccessType("offline")
+            .setApprovalPrompt("force")
+            .build();
+  }
+
+  public boolean hasClientCredentials() throws IOException {
+    String userId = ConfigurationService.getConfig().getUserId();
+    if (Utils.isEmpty(userId)) {
+      return false;
+    }
+    Credential credential = newFlow().loadCredential(userId);
+    return credential != null && !Utils.isEmpty(credential.getAccessToken())
+            && !Utils.isEmpty(credential.getRefreshToken());
   }
 
   public Calendar loadCalendarClient() throws IOException {
     String userId = ConfigurationService.getConfig().getUserId();
-    if (userId == null) {
-      userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    if (Utils.isEmpty(userId)) {
+      throw new IllegalStateException("UserId must set before.");
     }
-    Credential credential = newFlow().loadCredential(userId);
-    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
+    System.out.println("Using userId: " + userId);
+
+    GoogleAuthorizationCodeFlow newFlow = newFlow();
+    Credential credential = newFlow.loadCredential(userId);
+
+    if (credential.getRefreshToken() == null) {
+      System.out.println("no refresh token :(");
+
+      // try this: http://stackoverflow.com/questions/10827920/google-oauth-refresh-token-is-not-being-received
+      //      GoogleAuthorizationCodeRequestUrl authorizationUrl = newFlow.newAuthorizationUrl();
+      //      authorizationUrl.setRedirectUri(getRedirectUri(req));
+      //      onAuthorization(req, resp, authorizationUrl);
+      //      credential = null;
+
+      // ...
+
+      //      RefreshTokenRequest r = new RefreshTokenRequest(transport, jsonFactory, tokenServerUrl, refreshToken)
+      //      GoogleRefreshTokenRequest g = new GoogleRefreshTokenRequest(transport, jsonFactory, refreshToken, clientId, clientSecret)
+    } else {
+      System.out.println("got refresh token: " + credential.getRefreshToken());
+    }
+
+    return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("gaeCalendarGateway")
+            .build();
   }
 }

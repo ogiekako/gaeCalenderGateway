@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.appengine.api.datastore.Text;
 
 /**
@@ -33,12 +35,17 @@ public class RawMailIn extends DatastoreObject implements Serializable {
     this.rawMail = new Text(rawMail);
   }
   
-  public Text getRawMail() {
-    return rawMail;
+  public void chopRawMail(int maxLength) {
+    String shortDescription = StringUtils.abbreviate(this.rawMail.getValue(), maxLength);
+    this.rawMail = new Text(shortDescription);
+  }
+  
+  public String getRawMail() {
+    return rawMail.getValue();
   }
 
-  public void setRawMail(Text rawMail) {
-    this.rawMail = rawMail;
+  public void setRawMail(String rawMail) {
+    this.rawMail = new Text(rawMail);
   }
 
   public Long getRecieved() {
@@ -57,6 +64,10 @@ public class RawMailIn extends DatastoreObject implements Serializable {
   @Override
   public Long getId() {
     return this.id;
+  }
+  
+  public void setId(Long id) {
+    this.id = id;
   }
 
   @Override

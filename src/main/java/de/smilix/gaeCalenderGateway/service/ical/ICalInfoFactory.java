@@ -18,7 +18,7 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import de.smilix.gaeCalenderGateway.model.ICalInfos;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
 
 /**
  * @author Holger Cremer
@@ -54,7 +54,7 @@ public class ICalInfoFactory {
    * @throws InvalidFormatException on any underlying exception or invalid/missing data.
    * @throws NoSuchAlgorithmException 
    */
-  public ICalInfos create(String iCalData) throws InvalidFormatException, NoSuchAlgorithmException {
+  public IcalInfo create(String iCalData) throws InvalidFormatException, NoSuchAlgorithmException {
     if (iCalData == null) {
       throw new NullPointerException("The iCalData must not be null.");
     }
@@ -72,7 +72,7 @@ public class ICalInfoFactory {
     if (vEvent == null) {
       throw new InvalidFormatException("No VEVENT entry found.");
     }
-    ICalInfos info = new ICalInfos();
+    IcalInfo info = new IcalInfo();
 
     info.setuId(generateUId(vEvent));
     info.setSummary(getValueOrDefault(vEvent.getSummary(), "~~No summary~~"));

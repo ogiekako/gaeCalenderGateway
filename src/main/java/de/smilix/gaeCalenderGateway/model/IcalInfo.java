@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.api.datastore.Text;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
@@ -20,16 +21,17 @@ import de.smilix.gaeCalenderGateway.common.Utils;
  * @author Holger Cremer
  */
 @Entity
-public class ICalInfos extends DatastoreObject implements Serializable {
-  
+public class IcalInfo extends DatastoreObject implements Serializable {
+
   public enum Status {
     PARSED, ADD_SUCCESS, ADD_ERROR;
   }
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id; 
+  private Long id;
 
+  @JsonIgnore
   private Long tsCreated;
 
   private String uId;
@@ -41,10 +43,14 @@ public class ICalInfos extends DatastoreObject implements Serializable {
   private List<String> attendees;
   private Text description;
   private Status status = Status.PARSED;
-  
 
-  public ICalInfos() {
+  public IcalInfo() {
     this.tsCreated = System.currentTimeMillis();
+  }
+
+  public void chopDescription(int maxLength) {
+    String shortDescription = StringUtils.abbreviate(this.description.getValue(), maxLength);
+    this.description = new Text(shortDescription);
   }
 
   public String getuId() {
@@ -80,32 +86,36 @@ public class ICalInfos extends DatastoreObject implements Serializable {
   }
 
   public List<String> getAttendees() {
-    return this.attendees; 
+    return this.attendees;
   }
 
   public void setAttendees(List<String> attendees) {
-    this.attendees = attendees; 
+    this.attendees = attendees;
   }
- 
-  public String getDescription() { 
+
+  public String getDescription() {
     return this.description.getValue();
   }
 
   public void setDescription(String description) {
     this.description = new Text(description);
   }
-  
+
   public Status getStatus() {
     return status;
   }
 
   public void setStatus(Status status) {
     this.status = status;
-  }  
+  }
 
   @Override
   public Long getId() {
     return this.id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getTsCreated() {
@@ -127,7 +137,7 @@ public class ICalInfos extends DatastoreObject implements Serializable {
   public void setEndTimestamp(Long endTimestamp) {
     this.endTimestamp = endTimestamp;
   }
-  
+
   @Override
   public String toString() {
     return String

@@ -1,11 +1,11 @@
 package de.smilix.gaeCalenderGateway.service.data;
 
-import de.smilix.gaeCalenderGateway.model.ICalInfos;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
 
 /**
  * @author Holger Cremer
  */
-public class ICalInfoRepository extends AbstractRepository<ICalInfos> {
+public class ICalInfoRepository extends AbstractRepository<IcalInfo> {
 
 private static ICalInfoRepository instance;
   
@@ -17,6 +17,6 @@ private static ICalInfoRepository instance;
   }
   
   private ICalInfoRepository() {
-    super(ICalInfos.class);
+    super(IcalInfo.class);
   }
 }

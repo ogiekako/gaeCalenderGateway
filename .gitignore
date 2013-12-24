@@ -4,3 +4,6 @@
 .settings/
 target/
 src/main/webapp/WEB-INF/lib/
+src/main/webapp/WEB-INF/appengine-generated/
+src/main/webapp/WEB-INF/classes/
+frontend/.idea/

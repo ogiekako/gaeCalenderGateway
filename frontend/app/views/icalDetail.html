@@ -1,0 +1,34 @@
+<div class="ical-detail">
+
+    <h2>Ical</h2>
+
+    <p>You can edit some parts of the parsed event here.</p>
+    <form class="form-horizontal" role="form">
+        <form-entry label="Id"><p class="form-control-static">{{item.id}}</p></form-entry>
+        <form-entry label="uId"><p class="form-control-static">{{item.uId}}</p></form-entry>
+        <form-entry label="begin"><p class="form-control-static">{{item.startTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
+        <form-entry label="end"><p class="form-control-static">{{item.endTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
+        <form-entry label="location">
+            <input type="text" class="form-control" ng-model="item.location" />
+        </form-entry>
+        <form-entry label="organizer">
+            <input type="text" class="form-control" ng-model="item.organizer" />
+        </form-entry>
+        <form-entry label="attendees">
+            <input type="text" class="form-control" ng-model="item.attendees" ng-list=""/>
+        </form-entry>
+        <form-entry label="description">
+            <textarea id="rawMail" class="form-control" ng-model="item.description" rows="20"></textarea>
+        </form-entry>
+        <form-entry label="status">
+            <select id="status" class="form-control" ng-model="item.status" ng-options="s for s in statusOptions"></select>
+        </form-entry>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <a class="btn btn-danger" ng-href="#/ical">Cancel</a>
+                <button class="btn btn-success pull-right" ng-click="save()" ng-class="{disabled:saving}">Save</button>
+            </div>
+        </div>
+    </form>
+</div>

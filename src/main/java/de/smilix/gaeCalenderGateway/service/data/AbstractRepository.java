@@ -24,7 +24,7 @@ public abstract class AbstractRepository<E> {
   public List<E> getAll() {
     EntityManager em = EMF.get().createEntityManager();
     try {
-      Query query = em.createQuery("select from " + this.type.getName());
+      Query query = em.createQuery("select x from " + this.type.getSimpleName() + " x");
       List<E> resultList = query.getResultList();
       resultList.size();
       return resultList;

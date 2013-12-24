@@ -49,16 +49,13 @@ public class LoginServlet extends AbstractAppEngineAuthorizationCodeServlet {
         }
       }
 
-      String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
-      
-      Config config = ConfigurationService.getConfig();
-      config.setUserId(userId);
-      // todo: use from config
-      String calendarId = "kugekl5f03hjsvd8c34t1gg7hg@group.calendar.google.com";
-      config.setCalendarId(calendarId);
-      
-      ConfigurationService.save(config);
-      
-      writer.println("<pre>Config: " + config + "</pre><br>");
+//      String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+//      Config config = ConfigurationService.getConfig();
+//      config.setUserId(userId);
+//      String calendarId = "kugekl5f03hjsvd8c34t1gg7hg@group.calendar.google.com";
+//      config.setCalendarId(calendarId);
+//      
+//      ConfigurationService.save(config);
+//      writer.println("<pre>Config: " + config + "</pre><br>");
   }
 }

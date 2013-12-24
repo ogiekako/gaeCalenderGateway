@@ -20,12 +20,17 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Event.Creator;
 import com.google.api.services.calendar.model.Event.Reminders;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
+import com.google.api.services.calendar.model.Events;
 
+import de.smilix.gaeCalenderGateway.common.Utils;
+import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
-import de.smilix.gaeCalenderGateway.model.ICalInfos;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.service.AuthService;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 
@@ -45,8 +50,26 @@ public class GoogleCalService {
 
   private GoogleCalService() {
   }
+  
+  public List<CalendarInfo> getAllCalenders() throws IOException {
+    Calendar calendarSrv = AuthService.get().loadCalendarClient();
+    com.google.api.services.calendar.Calendar.CalendarList.List listRequest = calendarSrv.calendarList().list();
+    listRequest.setFields("items(id,summary)");
+    
+    CalendarList feed = listRequest.execute();
+    
+    List<CalendarInfo> result = new ArrayList<>();
+    
+    if (feed.getItems() != null) {
+      for (CalendarListEntry entry : feed.getItems()) {
+        result.add(new CalendarInfo(entry.getId(), entry.getSummary()));
+      }
+    }
+    
+    return result;
+  }
 
-  private void checkEventParameter(ICalInfos event) throws GCCException {
+  private void checkEventParameter(IcalInfo event) throws GCCException {
     nullCheckWithExcpetion(event, "event object is null");
     nullCheckWithExcpetion(event.getStartTimestamp(), "start time is null");
     nullCheckWithExcpetion(event.getEndTimestamp(), "end time is null");
@@ -59,7 +82,7 @@ public class GoogleCalService {
     }
   }
 
-  public void addEvent(ICalInfos ical) throws IOException {
+  public void addEvent(IcalInfo ical) throws IOException {
     //    checkEventParameter(event);
 
     Config config = ConfigurationService.getConfig();
@@ -139,7 +162,7 @@ public class GoogleCalService {
     return time;
   }
 
-  public void addTestEvent(ICalInfos event) throws IOException {
+  public void addTestEvent(IcalInfo event) throws IOException {
     Config config = ConfigurationService.getConfig();
 
     String calendarId = config.getCalendarId();

@@ -14,7 +14,8 @@ public class Config {
   @Id 
   private Long id = CONFIG_ID; 
     
-  private String userId; 
+  private String userId;
+  
   private String calendarId;
 
   public String getUserId() { 

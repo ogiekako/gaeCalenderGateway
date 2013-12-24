@@ -15,7 +15,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
-import de.smilix.gaeCalenderGateway.model.ICalInfos;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.model.RawMailIn;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.ical.ICalInfoFactory;

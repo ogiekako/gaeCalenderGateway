@@ -1,0 +1,29 @@
+<div class="rawMail">
+    <h2>Raw Mails</h2>
+
+    <p>
+        You see all raw mails in the table below. Click to edit.
+
+    <table class="table table-hover ">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>content (preview)</th>
+            <th>recieved</th>
+            <th>status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="mail in rawMails" ng-click="edit(mail.id)">
+            <td>{{mail.id}}</td>
+            <td>{{mail.rawMail}}</td>
+            <td>{{mail.recieved | date:'dd-MM-yyyy HH:mm:ss' }}</td>
+            <td>{{mail.status}}</td>
+        </tr>
+        </tbody>
+    </table>
+    </p>
+    <p ng-if="rawMails.length === 0" class="alert alert-info">
+        No raw mails found.
+    </p>
+</div>

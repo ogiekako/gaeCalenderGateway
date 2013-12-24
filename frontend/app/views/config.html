@@ -1,0 +1,44 @@
+<h2>UserId</h2>
+<p>
+    Using currently this userId: <input type="text" readonly disabled value="{{conf.userId}}" />
+</p>
+<p ng-if="currentUserId && currentUserId === conf.userId" class="alert alert-success">
+    This is the your current userId. Everything is fine .
+</p>
+<p ng-if="currentUserId && currentUserId !== conf.userId" class="alert alert-warning">
+    This is NOT your current userId! YOUR id is {{currentUserId}}
+</p>
+
+<h2>Calender</h2>
+You can select calender to write all events into.
+<button class="btn btn-default" ng-click="listCalendars()" ng-disabled="calendarListLoading">
+    List available calendars<span ng-show="calendarListLoading"> ...</span>
+</button>
+
+<div class="config__calendarList" ng-if="calendarList.length > 0">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>summary</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="cal in calendarList" ng-class="{warning: selected}" ng-init="selected = cal.id === conf.calendarId">
+            <td>{{cal.id}}</td>
+            <td>{{cal.summary}}</td>
+            <td>
+                <button ng-if="!selected" class="btn btn-default" ng-click="useCalendar(cal.id)">Use this</button>
+                <span ng-if="selected">ausgewählt</span>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+

@@ -1,0 +1,91 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <!-- build:css({.tmp,app}) styles/main.css -->
+        <link rel="stylesheet" href="styles/bootstrap.css">
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+</head>
+  <body ng-app="frontendApp">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+
+
+    <div class="container">
+        <div class="header" ng-controller="NavCtrl as nav">
+            <ul class="nav nav-pills pull-right">
+                <li ng-class="{active: nav.isActive['/']}"><a ng-href="#/">Home</a></li>
+                <li ng-class="{active: nav.isActive['/rawMailIn']}"><a ng-href="#/rawMailIn">Raw Mails</a></li>
+                <li ng-class="{active: nav.isActive['/ical']}"><a ng-href="#/ical">Ical Infos</a></li>
+                <li ng-class="{active: nav.isActive['/config']}"><a ng-href="#/config">Configuration</a></li>
+            </ul>
+            <h1 class="text-muted">frontend</h1>
+        </div>
+
+        <div class="alert alert-danger ng-cloak" ng-show="globalErrorMsg.length > 0">
+            <button type="button" class="close" aria-hidden="true" ng-click="">&times;</button>
+            <div ng-repeat="msg in globalErrorMsg track by $index">
+                <strong>Error!</strong> {{msg}}
+            </div>
+        </div>
+
+        <div class="content" ng-view=""></div>
+
+        <div class="footer">
+            <p>...</p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var CONFIG = {
+            endpointUrl: '//localhost:8888/rest/'
+        };
+    </script>
+
+    <!--<script src="bower_components/jquery/jquery.js"></script>-->
+    <script src="bower_components/angular/angular.js"></script>
+
+        <!-- build:js scripts/modules.js -->
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <!--<script src="bower_components/angular-cookies/angular-cookies.js"></script>-->
+        <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/ConfigCtrl.js"></script>
+        <script src="scripts/controllers/NavCtrl.js"></script>
+        <script src="scripts/controllers/GlobalError.js"></script>
+        <script src="scripts/controllers/RawMailInCtrl.js"></script>
+        <script src="scripts/controllers/RawMailInDetailCtrl.js"></script>
+        <script src="scripts/controllers/IcalInfoCtrl.js"></script>
+        <script src="scripts/controllers/IcalInfoDetailCtrl.js"></script>
+
+        <script src="scripts/services/BaseService.js"></script>
+        <script src="scripts/services/User.js"></script>
+        <script src="scripts/services/Config.js"></script>
+        <script src="scripts/services/Utils.js"></script>
+        <script src="scripts/services/RawMailInService.js"></script>
+        <script src="scripts/services/IcalInfoService.js"></script>
+        <script src="scripts/directives/formEntry.js"></script>
+        <!-- endbuild -->
+        </body>
+</html>

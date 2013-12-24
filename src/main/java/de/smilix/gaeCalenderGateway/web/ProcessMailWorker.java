@@ -2,24 +2,19 @@ package de.smilix.gaeCalenderGateway.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.smilix.gaeCalenderGateway.common.Utils;
-import de.smilix.gaeCalenderGateway.model.ICalInfos;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.model.RawMailIn;
 import de.smilix.gaeCalenderGateway.model.RawMailIn.Status;
-import de.smilix.gaeCalenderGateway.service.data.EMF;
 import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
@@ -41,10 +36,10 @@ public class ProcessMailWorker extends HttpServlet {
       return;
     }
     
-    ICalInfos iCalInfos;
+    IcalInfo iCalInfos;
     try {
       MimeMessage message =
-              new MimeMessage(session, new ByteArrayInputStream(rawMail.getRawMail().getValue().getBytes()));
+              new MimeMessage(session, new ByteArrayInputStream(rawMail.getRawMail().getBytes()));
       MailParser parser = new MailParser();
       String mail = parser.parse(message);
 

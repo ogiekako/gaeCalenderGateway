@@ -1,0 +1,20 @@
+<div class="rawMail-detail">
+
+    <h2>Raw Mails</h2>
+
+    <p>You can edit some parts of the raw email here.</p>
+
+    <form class="form-horizontal" role="form">
+        <form-entry label="id"><p class="form-control-static">{{mailItem.id}}</p></form-entry>
+        <form-entry label="Recieved"><p class="form-control-static">{{mailItem.recieved | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
+        <form-entry label="Status"><select id="status" class="form-control" ng-model="mailItem.status" ng-options="s for s in statusOptions"></select></form-entry>
+        <form-entry label="raw Mail"><textarea id="rawMail" class="form-control" ng-model="mailItem.rawMail" rows="20">}</textarea></form-entry>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <a class="btn btn-danger" ng-href="#/rawMailIn">Cancel</a>
+                <button class="btn btn-success pull-right" ng-click="save()" ng-class="{disabled:saving}">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
