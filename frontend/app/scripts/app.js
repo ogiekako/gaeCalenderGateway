@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('frontendApp', [
-    'ngResource',
-    'ngRoute'
+    'ngAnimate',
+    'ngRoute',
+    'ngSanitize'
   ])
   .config([
     '$provide', '$routeProvider',
@@ -22,7 +23,7 @@ angular.module('frontendApp', [
             BaseService.checkCredentials().then(
               function ok(result) {
                 if (!result.valid) {
-                  GlobalError.show('Invalid auth. TODO.');
+                  GlobalError.show('Invalid auth. <a href="/login">Please login</a>.');
                   defer.reject();
                   return;
                 }
@@ -69,6 +70,11 @@ angular.module('frontendApp', [
         .when('/ical/:id', {
           templateUrl: 'views/icalDetail.html',
           controller: 'IcalInfoDetailCtrl',
+          resolve: ensureCredentials
+        })
+        .when('/debug', {
+          templateUrl: 'views/debug.html',
+          controller: 'DebugCtrl',
           resolve: ensureCredentials
         })
         .otherwise({

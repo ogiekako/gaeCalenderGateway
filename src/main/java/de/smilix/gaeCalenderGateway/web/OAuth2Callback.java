@@ -14,6 +14,12 @@
 
 package de.smilix.gaeCalenderGateway.web;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeResponseUrl;
 import com.google.api.client.auth.oauth2.Credential;
@@ -21,12 +27,6 @@ import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineA
 import com.google.appengine.api.users.UserServiceFactory;
 
 import de.smilix.gaeCalenderGateway.service.AuthService;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * HTTP servlet to process access granted from user.

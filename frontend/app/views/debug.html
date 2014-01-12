@@ -1,0 +1,59 @@
+<h2>Debug</h2>
+<p>
+    Some things for debugging this app.
+</p>
+
+<h3>Logs</h3>
+<p>
+    You'll find the logs in the Google App Engine UI: <a
+        href="https://appengine.google.com/logs?&app_id=dulcet-glazing-363">https://appengine.google.com/logs?&app_id=dulcet-glazing-363</a>
+</p>
+
+<h3>Calendar</h3>
+<p>You can list all events of the calendar used as target. Currently this is <code>{{calendarId}}</code>, you can change this
+    <a ng-href="#/config">in the Configuration</a>.
+
+<form class="form" role="form" novalidate>
+    <div class="row">
+        <div class="col-xs-3">
+            <label>Show events for the last X days:</label>
+        </div>
+        <div class="col-xs-1">
+            <input type="number" ng-model="form.days" class="form-control" required/>
+        </div>
+        <div class="col-xs-3">
+            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 365">Last year</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 30">Last month</button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 7">Last week</button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" ng-click="listEvents()">List events</button>
+</form>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>summary</th>
+        <th>start</th>
+        <th>end</th>
+        <th>location</th>
+        <th>description (preview)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="event in eventList" ng-click="edit(ical.id)">
+        <td>{{event.summary}}</td>
+        <td>{{event.start.dateTime.value | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+        <td>{{event.end.dateTime.value | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+        <td>{{event.location}}</td>
+        <td class="my-slide-container">
+            <pre class="fade-animation" ng-if="!event.showFull" ng-click="event.showFull = true" title="Click to get full description">{{event.descriptionPreview}}</pre>
+            <pre class="fade-animation" ng-if="event.showFull" ng-click="event.showFull = false">{{event.description}}</pre>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+</p>

@@ -6,7 +6,7 @@
       <param-value>/rest</param-value>
     </context-param>
     <context-param>
-      <param-name>javax.ws.rs.core.Application</param-name>
+      <param-name>javax.ws.rs.Application</param-name>
       <param-value>de.smilix.gaeCalenderGateway.web.rest.RestApplication</param-value>
     </context-param>
         <servlet>
@@ -46,19 +46,7 @@
     </auth-constraint>
   </security-constraint>
 
-
-<!-- testing -->
-    <servlet>
-        <servlet-name>TestServlet</servlet-name>
-        <servlet-class>
-            de.smilix.gaeCalenderGateway.web.TestServlet
-        </servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>TestServlet</servlet-name>
-        <url-pattern>/test</url-pattern>
-    </servlet-mapping>
-    
+  <!-- login -->
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>

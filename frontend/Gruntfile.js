@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
+      dist: '../src/main/webapp/app'
     },
 
     // Watches files for changes and runs tasks based on the changed files
@@ -48,6 +48,7 @@ module.exports = function (grunt) {
         },
         files: [
           '<%= yeoman.app %>/{,*/}*.html',
+          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
@@ -108,6 +109,9 @@ module.exports = function (grunt) {
 
     // Empties folders to start fresh
     clean: {
+      options: {
+        force: true // to remove the dist dir outside of this app
+      },
       dist: {
         files: [{
           dot: true,
@@ -235,6 +239,17 @@ module.exports = function (grunt) {
       }
     },
 
+    replace: {
+      dist: {
+        src: ['<%= yeoman.dist %>/index.html'],
+        overwrite: true,
+        replacements: [{
+          from: /^.*\$REMOVE_LINE\$.*$/m,
+          to: ''
+        }]
+      }
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -354,6 +369,7 @@ module.exports = function (grunt) {
     'concat',
     'ngmin',
     'copy:dist',
+    'replace',
     'cdnify',
     'cssmin',
     'uglify',

@@ -8,6 +8,10 @@
 	<persistence-unit name="transactions-optional">
 		<!-- <provider>org.datanucleus.store.appengine.jpa.DatastorePersistenceProvider</provider> -->
 		<provider>org.datanucleus.api.jpa.PersistenceProviderImpl</provider>
+		<class>de.smilix.gaeCalenderGateway.model.Config</class>
+		<class>de.smilix.gaeCalenderGateway.model.IcalInfo</class>
+		<class>de.smilix.gaeCalenderGateway.model.RawMailIn</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="datanucleus.NontransactionalRead" value="true" />
 			<property name="datanucleus.NontransactionalWrite" value="true" />

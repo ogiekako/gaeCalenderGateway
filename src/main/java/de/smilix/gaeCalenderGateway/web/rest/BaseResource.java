@@ -35,7 +35,9 @@ public class BaseResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   public void setCalendarId(CalendarIdParam param) {
-    ConfigurationService.getConfig().setCalendarId(param.getId());
+    Config config = ConfigurationService.getConfig();
+    config.setCalendarId(param.getId());
+    ConfigurationService.save(config);
   }
 
   @GET

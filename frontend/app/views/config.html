@@ -11,11 +11,16 @@
 
 <h2>Calender</h2>
 You can select calender to write all events into.
-<button class="btn btn-default" ng-click="listCalendars()" ng-disabled="calendarListLoading">
-    List available calendars<span ng-show="calendarListLoading"> ...</span>
+<div class="alert alert-warning ng-cloak" ng-if="!conf.calendarId">
+    <strong>Warning!</strong>
+    No calendar id is configured! Please select a calendar as backend.
+</div>
+
+<button class="btn btn-default" ng-click="listCalendars()" ng-disabled="data.calendarListLoading">
+    List available calendars<span ng-show="data.calendarListLoading"> ...</span>
 </button>
 
-<div class="config__calendarList" ng-if="calendarList.length > 0">
+<div class="config__calendarList" ng-if="data.calendarList.length > 0">
     <table class="table">
         <thead>
         <tr>
@@ -25,12 +30,12 @@ You can select calender to write all events into.
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="cal in calendarList" ng-class="{warning: selected}" ng-init="selected = cal.id === conf.calendarId">
+        <tr ng-repeat="cal in data.calendarList" ng-class="{warning: cal.id === conf.calendarId}">
             <td>{{cal.id}}</td>
             <td>{{cal.summary}}</td>
             <td>
-                <button ng-if="!selected" class="btn btn-default" ng-click="useCalendar(cal.id)">Use this</button>
-                <span ng-if="selected">ausgewählt</span>
+                <button ng-if="cal.id !== conf.calendarId" class="btn btn-default" ng-click="useCalendar(cal.id)">Use this</button>
+                <span ng-if="cal.id === conf.calendarId">ausgewählt</span>
             </td>
         </tr>
         </tbody>

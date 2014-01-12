@@ -5,29 +5,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Event.Creator;
 import com.google.api.services.calendar.model.Event.Reminders;
-import com.google.api.services.calendar.model.CalendarList;
-import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
 
-import de.smilix.gaeCalenderGateway.common.Utils;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
@@ -36,8 +29,7 @@ import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 
 public class GoogleCalService {
 
-  private static final Logger LOG = LoggerFactory
-          .getLogger(GoogleCalService.class);
+  private static final Logger LOG = Logger.getLogger(GoogleCalService.class.getName());
 
   private static GoogleCalService instance;
 
@@ -67,6 +59,19 @@ public class GoogleCalService {
     }
     
     return result;
+  }
+  
+  // https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=de
+  public List<Event> getAllEvents(String calendarId, Date since) throws IOException {
+    Calendar calendarSrv = AuthService.get().loadCalendarClient();
+    com.google.api.services.calendar.Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
+    listRequest.setSingleEvents(true);
+    listRequest.setOrderBy("startTime");
+    listRequest.setTimeMin(new DateTime(since));
+//    listRequest.setTimeMin(new DateTime("2013-09-23T16:00:00+02:00"));
+    
+    Events events = listRequest.execute();
+    return events.getItems();
   }
 
   private void checkEventParameter(IcalInfo event) throws GCCException {

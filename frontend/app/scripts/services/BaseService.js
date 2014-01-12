@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('frontendApp').service('BaseService', [
-  '$http', '$q', 'Config',
+angular.module('frontendApp').service('BaseService',
   function ($http, $q, Config) {
 
     this.checkCredentials = function () {
@@ -69,5 +68,4 @@ angular.module('frontendApp').service('BaseService', [
       return defer.promise;
 
     };
-  }
-]);
+  });
