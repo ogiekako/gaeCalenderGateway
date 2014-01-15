@@ -64,7 +64,7 @@ body {
 }
 
 .waiting {
-  background: url('ajax-loader.gif') center no-repeat transparent;
+  background: url('../images/ajax-loader.gif') center no-repeat transparent;
 }
 
 /* animations */
