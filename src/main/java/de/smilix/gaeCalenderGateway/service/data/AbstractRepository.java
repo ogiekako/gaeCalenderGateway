@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import de.smilix.gaeCalenderGateway.common.Utils;
+
 public abstract class AbstractRepository<E> {
 
   private Class<E> type;
@@ -21,10 +23,16 @@ public abstract class AbstractRepository<E> {
     return SimpleDAO.GET.merge(entry);
   }
 
-  public List<E> getAll() {
+  public List<E> getAll(String orderBy) {
+    if (Utils.isEmpty(orderBy)) {
+      orderBy = "";
+    } else {
+      orderBy = "order by " + orderBy;
+    }
+    
     EntityManager em = EMF.get().createEntityManager();
     try {
-      Query query = em.createQuery("select x from " + this.type.getSimpleName() + " x");
+      Query query = em.createQuery("select x from " + this.type.getSimpleName() + " x " + orderBy);
       List<E> resultList = query.getResultList();
       resultList.size();
       return resultList;

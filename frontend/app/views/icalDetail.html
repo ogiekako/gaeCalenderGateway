@@ -20,6 +20,7 @@
         <form-entry label="description">
             <textarea id="rawMail" class="form-control" ng-model="item.description" rows="20"></textarea>
         </form-entry>
+        <form-entry label="recieved"><p class="form-control-static">{{item.tsCreated | date:'dd-MM-yyyy HH:mm:ss' }}</p></form-entry>
         <form-entry label="status">
             <select id="status" class="form-control" ng-model="item.status" ng-options="s for s in statusOptions"></select>
         </form-entry>

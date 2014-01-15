@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -131,7 +132,10 @@ public class GoogleCalService {
     reminders.setUseDefault(false); // or you get cannotUseDefaultRemindersAndSpecifyOverride
     event.setReminders(reminders);
     event = calendarSrv.events().insert(calendarId, event).execute();
-    LOG.info("Event added: " + event);
+    if (LOG.isLoggable(Level.FINER)) {
+      LOG.finest("com.google.api.services.calendar.model.Event: " + event);
+    }
+    LOG.info("Event to calendar added, id: " + event.getICalUID());
 
 
     // OLD copy & paste

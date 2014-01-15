@@ -22,7 +22,7 @@ public class RawMailInResource {
   @Path("/list")
   @Produces(MediaType.APPLICATION_JSON)
   public List<RawMailIn> getList() {
-    List<RawMailIn> allItems = RawMailInRepository.get().getAll();
+    List<RawMailIn> allItems = RawMailInRepository.get().getAll("recieved desc");
     
     for (RawMailIn item : allItems) {
       item.chopRawMail(30);

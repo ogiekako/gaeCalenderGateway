@@ -22,7 +22,7 @@ public class IcalInfoResource {
   @Path("/list")
   @Produces(MediaType.APPLICATION_JSON)
   public List<IcalInfo> getList() {
-    List<IcalInfo> list = ICalInfoRepository.get().getAll();
+    List<IcalInfo> list = ICalInfoRepository.get().getAll("tsCreated desc");
     for (IcalInfo icalInfo : list) {
       icalInfo.chopDescription(30);
     }

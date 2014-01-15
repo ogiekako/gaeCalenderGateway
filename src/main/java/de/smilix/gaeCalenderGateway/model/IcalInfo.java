@@ -31,7 +31,6 @@ public class IcalInfo extends DatastoreObject implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @JsonIgnore
   private Long tsCreated;
 
   private String uId;
