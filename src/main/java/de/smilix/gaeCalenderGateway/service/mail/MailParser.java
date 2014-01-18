@@ -1,13 +1,16 @@
 package de.smilix.gaeCalenderGateway.service.mail;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
@@ -19,6 +22,14 @@ import de.smilix.gaeCalenderGateway.common.Utils;
 public class MailParser {
 
   private static final Logger LOG = Logger.getLogger(MailParser.class.getName());
+
+  public MimeMessage createFromString(String mail) throws MessagingException {
+    Session session = Session.getDefaultInstance(new Properties(), null);
+    MimeMessage message =
+            new MimeMessage(session, new ByteArrayInputStream(mail.getBytes()));
+
+    return message;
+  }
 
   public String parse(MimeMessage message) throws MessagingException, IOException {
 

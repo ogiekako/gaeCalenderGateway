@@ -8,6 +8,9 @@
         <form-entry label="uId"><p class="form-control-static">{{item.uId}}</p></form-entry>
         <form-entry label="begin"><p class="form-control-static">{{item.startTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
         <form-entry label="end"><p class="form-control-static">{{item.endTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
+        <form-entry label="summary">
+            <input type="text" class="form-control" ng-model="item.summary"/>
+        </form-entry>
         <form-entry label="location">
             <input type="text" class="form-control" ng-model="item.location" />
         </form-entry>
@@ -28,7 +31,11 @@
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <a class="btn btn-danger" ng-href="#/ical">Cancel</a>
-                <button class="btn btn-success pull-right" ng-click="save()" ng-class="{disabled:saving}">Save</button>
+
+                <div class="pull-right">
+                    <button class="btn btn-default" ng-click="addToCalendar()" ng-class="{disabled:action}">Add to Calendar</button>
+                    <button class="btn btn-success" ng-click="save()" ng-class="{disabled:action}">Save</button>
+                </div>
             </div>
         </div>
     </form>

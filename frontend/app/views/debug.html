@@ -37,6 +37,7 @@
         <th>summary</th>
         <th>start</th>
         <th>end</th>
+        <th>recurrence</th>
         <th>location</th>
         <th>description (preview)</th>
     </tr>
@@ -46,6 +47,7 @@
         <td>{{event.summary}}</td>
         <td>{{event.start.dateTime.value | date:'dd-MM-yyyy HH:mm:ss'}}</td>
         <td>{{event.end.dateTime.value | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+        <td title="{{event.recurrence}}">{{event.recurrence ? 'yes' : 'no'}}</td>
         <td>{{event.location}}</td>
         <td class="my-slide-container">
             <pre class="fade-animation" ng-if="!event.showFull" ng-click="event.showFull = true" title="Click to get full description">{{event.descriptionPreview}}</pre>

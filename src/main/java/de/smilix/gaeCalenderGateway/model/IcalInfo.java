@@ -10,7 +10,6 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.appengine.api.datastore.Text;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
@@ -41,8 +40,12 @@ public class IcalInfo extends DatastoreObject implements Serializable {
   private String organizer;
   private List<String> attendees;
   private Text description;
+  private List<String> recurrence;
+  private int tzStartOffsetInMinutes;
+  private int tzEndOffsetInMinutes;
   private Status status = Status.PARSED;
 
+  
   public IcalInfo() {
     this.tsCreated = System.currentTimeMillis();
   }
@@ -136,23 +139,48 @@ public class IcalInfo extends DatastoreObject implements Serializable {
   public void setEndTimestamp(Long endTimestamp) {
     this.endTimestamp = endTimestamp;
   }
+  
+  public List<String> getRecurrence() {
+    return recurrence;
+  }
+
+  public void setRecurrence(List<String> recurrence) {
+    this.recurrence = recurrence;
+  }
+  
+  public int getTzStartOffsetInMinutes() {
+    return tzStartOffsetInMinutes;
+  }
+
+  public void setTzStartOffsetInMinutes(int tzStartOffsetInMinutes) {
+    this.tzStartOffsetInMinutes = tzStartOffsetInMinutes;
+  }
+
+  public int getTzEndOffsetInMinutes() {
+    return tzEndOffsetInMinutes;
+  }
+
+  public void setTzEndOffsetInMinutes(int tzEndOffsetInMinutes) {
+    this.tzEndOffsetInMinutes = tzEndOffsetInMinutes;
+  }
 
   @Override
   public String toString() {
     return String
-            .format("ICalInfos [id=%s, tsCreated=%s, uId=%s, summary=%s, startTimestamp=%s, endTimestamp=%s, location=%s, organizer=%s, attendees=%s, description=%s, status=%s]",
+            .format("IcalInfo [id=%s, tsCreated=%s, uId=%s, summary=%s, startTimestamp=%s, endTimestamp=%s, location=%s, organizer=%s, attendees=%s, description=%s, recurrence=%s, tzStartOffsetInMinutes=%s, tzEndOffsetInMinutes=%s, status=%s]",
                     id, tsCreated, uId, summary, startTimestamp, endTimestamp, location, organizer, attendees,
-                    description, status);
+                    description, recurrence, tzStartOffsetInMinutes, tzEndOffsetInMinutes, status);
   }
 
   public String toShortSummary() {
     // @formatter:off
     return String.format(
-            "[%s - %s] '%s' in '%s'. (uid: %s, tsCreated: %s)",
+            "[%s - %s] '%s' in '%s'. (uid: %s, tsCreated: %s, multi: %b)",
             Utils.timestampToFormattedDate(this.startTimestamp),
             Utils.timestampToFormattedDate(this.endTimestamp),
             this.summary, this.location, this.uId,
-            Utils.DATE_FORMAT.format(this.tsCreated));
+            Utils.DATE_FORMAT.format(this.tsCreated), 
+            this.recurrence != null && !this.recurrence.isEmpty());
     // @formatter:on
   }
 }

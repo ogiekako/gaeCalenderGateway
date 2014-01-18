@@ -8,8 +8,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.property.DateProperty;
+import net.fortuna.ical4j.model.property.DtStart;
+
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
@@ -43,34 +48,34 @@ public class GoogleCalService {
 
   private GoogleCalService() {
   }
-  
+
   public List<CalendarInfo> getAllCalenders() throws IOException {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.CalendarList.List listRequest = calendarSrv.calendarList().list();
     listRequest.setFields("items(id,summary)");
-    
+
     CalendarList feed = listRequest.execute();
-    
+
     List<CalendarInfo> result = new ArrayList<>();
-    
+
     if (feed.getItems() != null) {
       for (CalendarListEntry entry : feed.getItems()) {
         result.add(new CalendarInfo(entry.getId(), entry.getSummary()));
       }
     }
-    
+
     return result;
   }
-  
+
   // https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=de
   public List<Event> getAllEvents(String calendarId, Date since) throws IOException {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
-    listRequest.setSingleEvents(true);
-    listRequest.setOrderBy("startTime");
+    listRequest.setSingleEvents(false);
+//    listRequest.setOrderBy("startTime"); // can't use this with singleEvents false
     listRequest.setTimeMin(new DateTime(since));
-//    listRequest.setTimeMin(new DateTime("2013-09-23T16:00:00+02:00"));
-    
+    //    listRequest.setTimeMin(new DateTime("2013-09-23T16:00:00+02:00"));
+
     Events events = listRequest.execute();
     return events.getItems();
   }
@@ -101,39 +106,55 @@ public class GoogleCalService {
     event.setDescription(ical.getDescription());
     event.setLocation(ical.getLocation());
 
-    event.setStart(makeTime(ical.getStartTimestamp()));
-    event.setEnd(makeTime(ical.getEndTimestamp()));
+    event.setStart(makeTime(ical.getStartTimestamp(), ical.getTzStartOffsetInMinutes()));
+    event.setEnd(makeTime(ical.getEndTimestamp(), ical.getTzEndOffsetInMinutes()));
 
     List<EventAttendee> attendees = new ArrayList<>();
     for (String attendeeName : ical.getAttendees()) {
       EventAttendee ea = new EventAttendee();
       ea.setDisplayName(attendeeName);
       ea.setEmail("none@localhost");
-      attendees.add(ea); 
+      attendees.add(ea);
     }
     event.setAttendees(attendees);
-    
+
     // add attendees as description values, because they don't have an email address
-//        StringBuilder description = new StringBuilder();
-//        for (String attendeeName : event.getAttendees()) {
-//          description.append(attendeeName).append("\n");
-//        }
+    //        StringBuilder description = new StringBuilder();
+    //        for (String attendeeName : event.getAttendees()) {
+    //          description.append(attendeeName).append("\n");
+    //        }
 
     Creator creator = new Creator();
-//    creator.setEmail("none@localhost");
+    //    creator.setEmail("none@localhost");
     creator.setDisplayName(ical.getOrganizer());
     event.setCreator(creator);
 
+    // reminder
     Reminders reminders = new Reminders();
     EventReminder eventReminder = new EventReminder();
-    eventReminder.setMinutes(3);
+    eventReminder.setMinutes(Config.ALARM_MINUTES);
     eventReminder.setMethod("popup");
     reminders.setOverrides(Arrays.asList(eventReminder));
     reminders.setUseDefault(false); // or you get cannotUseDefaultRemindersAndSpecifyOverride
     event.setReminders(reminders);
-    event = calendarSrv.events().insert(calendarId, event).execute();
-    if (LOG.isLoggable(Level.FINER)) {
-      LOG.finest("com.google.api.services.calendar.model.Event: " + event);
+
+    if (!ical.getRecurrence().isEmpty()) {
+      event.setRecurrence(ical.getRecurrence());
+    }
+
+    // add event 
+    if (LOG.isLoggable(Level.FINE)) {
+      LOG.fine("com.google.api.services.calendar.model.Event: " + event.toPrettyString());
+    }
+
+    try {
+      event = calendarSrv.events().insert(calendarId, event).execute();
+    } catch (GoogleJsonResponseException e) {
+      if (e.getDetails().getCode() == 409 /* duplicate */) {
+        event = findAndUpdateEvent(calendarSrv, event);
+      } else {
+        throw e;
+      }
     }
     LOG.info("Event to calendar added, id: " + event.getICalUID());
 
@@ -165,9 +186,26 @@ public class GoogleCalService {
 
   }
 
-  private EventDateTime makeTime(Long startTimestamp) {
+  private Event findAndUpdateEvent(Calendar calendarSrv, Event event) throws IOException {
+    LOG.info("Event already exists (Goolge API error 409 duplicate), try to find it's eventId and update it.");
+    String calendarId = ConfigurationService.getConfig().getCalendarId();
+    com.google.api.services.calendar.Calendar.Events.List list = calendarSrv.events().list(calendarId);
+    list.setShowDeleted(true);
+    list.setICalUID(event.getICalUID());
+    List<Event> eventsList = list.execute().getItems();
+    if (eventsList.size() != 1) {
+      throw new IllegalStateException("Tried to get the event for the duplicated event (icalUid: " + event.getICalUID() +"), but got this amount of event: " + eventsList.size());
+    }
+    
+    String eventId = eventsList.get(0).getId();
+    event.setSequence(eventsList.get(0).getSequence());
+    return calendarSrv.events().update(calendarId, eventId, event).execute();
+  }
+
+  private EventDateTime makeTime(Long startTimestamp, int timeZoneOffset) {
     EventDateTime time = new EventDateTime();
-    time.setDateTime(new DateTime(startTimestamp));
+    time.setTimeZone(Config.TIME_ZONE);
+    time.setDateTime(new DateTime(startTimestamp, timeZoneOffset));
     return time;
   }
 

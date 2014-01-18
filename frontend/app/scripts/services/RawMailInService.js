@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').service('RawMailInService',
-  function Rawmailin($http, $q, Config) {
+  function ($http, $q, Config, Utils) {
 
     this.getList = function () {
       var defer = $q.defer();
@@ -48,5 +48,4 @@ angular.module('frontendApp').service('RawMailInService',
 
       return defer.promise;
     };
-
   });

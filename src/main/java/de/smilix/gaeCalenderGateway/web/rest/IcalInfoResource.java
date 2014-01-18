@@ -1,6 +1,11 @@
 package de.smilix.gaeCalenderGateway.web.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,9 +19,12 @@ import javax.ws.rs.core.Response.Status;
 
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
+import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 
 @Path("/ical")
 public class IcalInfoResource {
+
+  private static final Logger LOG = Logger.getLogger(IcalInfoResource.class.getName());
 
   @GET
   @Path("/list")
@@ -39,8 +47,8 @@ public class IcalInfoResource {
     }
     return Response.ok(find).build();
   }
-  
-  
+
+
   @PUT
   @Path("/item/{id}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -59,10 +67,55 @@ public class IcalInfoResource {
     info.setAttendees(icalInfo.getAttendees());
     info.setDescription(icalInfo.getDescription());
     info.setStatus(icalInfo.getStatus());
-    
+
     ICalInfoRepository.get().merge(info);
-    
+
     return Response.ok().build();
+  }
+
+  @PUT
+  @Path("/addToCalendar")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response addToCalendar(List<Long> icalInfoIdList) {
+    LOG.fine("Try to add events into Google calendar: " + icalInfoIdList);
+
+    AddToCalResponse response = new AddToCalResponse();
+    ICalInfoRepository repo = ICalInfoRepository.get();
+
+    for (Long id : icalInfoIdList) {
+      IcalInfo iCalInfos = repo.find(id);
+      if (iCalInfos == null) {
+        response.getErrors().put(id, "Can't find the event with id: " + id);
+        continue;
+      }
+      try {
+        GoogleCalService.get().addEvent(iCalInfos);
+        iCalInfos.setStatus(IcalInfo.Status.ADD_SUCCESS);
+        LOG.info("New calendar entry added: " + iCalInfos.getId());
+        response.getSuccess().add(id);
+      } catch (Exception e) {
+        iCalInfos.setStatus(IcalInfo.Status.ADD_ERROR);
+        LOG.log(Level.SEVERE, "Error during google calender connection.", e);
+        response.getErrors().put(id, "Error adding to calendar: " + e.getMessage());
+      } finally {
+        repo.merge(iCalInfos);
+      }
+    }
+    
+    return Response.ok(response).build();
+  }
+  
+  private static class AddToCalResponse {
+    private Map<Long, String> errors = new HashMap<>();
+    private List<Long> success = new ArrayList<>();
+
+    public Map<Long, String> getErrors() {
+      return errors;
+    }
+    public List<Long> getSuccess() {
+      return success;
+    }
   }
 
 }

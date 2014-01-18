@@ -29,7 +29,6 @@ public class ProcessMailWorker extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String id = req.getParameter("id");
     LOG.fine("Process id: " + id);
-    Session session = Session.getDefaultInstance(new Properties(), null);
 
     RawMailInRepository r = RawMailInRepository.get();
     RawMailIn rawMail = r.find(Long.parseLong(id));
@@ -41,10 +40,9 @@ public class ProcessMailWorker extends HttpServlet {
     IcalInfo iCalInfos;
     ICalInfoRepository iCalInfoRepository;
     try {
-      MimeMessage message =
-              new MimeMessage(session, new ByteArrayInputStream(rawMail.getRawMail().getBytes()));
       MailParser parser = new MailParser();
-      String mail = parser.parse(message);
+      MimeMessage mailMsg = parser.createFromString(rawMail.getRawMail());
+      String mail = parser.parse(mailMsg);
 
       if (Utils.isEmpty(mail)) {
         LOG.severe("Mail did'nt match, see logs.");

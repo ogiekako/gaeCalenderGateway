@@ -7,6 +7,12 @@ import javax.persistence.Id;
 public class Config {
   
   /**
+   * The timezone used for the recurrent events (Google require this). 
+   */
+  public static final String TIME_ZONE = "Europe/Berlin";
+  public static final int ALARM_MINUTES = 3;
+  
+  /**
    * There is only one config....
    */
   public static Long CONFIG_ID = 1L;          

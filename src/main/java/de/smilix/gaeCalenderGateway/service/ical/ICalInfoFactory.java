@@ -17,6 +17,9 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.property.Attendee;
+import net.fortuna.ical4j.model.property.DateProperty;
+import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 
@@ -72,6 +75,7 @@ public class ICalInfoFactory {
     if (vEvent == null) {
       throw new InvalidFormatException("No VEVENT entry found.");
     }
+
     IcalInfo info = new IcalInfo();
 
     info.setuId(generateUId(vEvent));
@@ -93,16 +97,38 @@ public class ICalInfoFactory {
       Attendee attendee = (Attendee) property;
       attendeeList.add(getParameterValueOrDefault(attendee, Cn.CN, "~~No attendee CN~~"));
     }
-    
+
     info.setAttendees(attendeeList);
 
-    //    info.setDescription(getValueOrDefault(vEvent.getDescription(), ""));
     info.setDescription(getValueOrDefault(vEvent.getDescription(), ""));
+
+
+    parseReccurence(vEvent, info);
 
     LOG.fine("Created ICal info: " + info.toShortSummary());
     LOG.finer("Description: " + info.getDescription());
 
     return info;
+  }
+
+  private void parseReccurence(VEvent vEvent, IcalInfo info) {
+    List<String> rules = new ArrayList<>();
+    PropertyList properties = vEvent.getProperties(Property.RRULE);
+    for (Object prop : properties) {
+      RRule rrule = (RRule) prop;
+      //      Recur rcur = rrule.getR..
+      rules.add(rrule.toString());
+    }
+
+    if (!rules.isEmpty()) {
+      LOG.fine("Recurrences: " + rules);
+    }
+    info.setRecurrence(rules);
+
+    final DtStart start = (DtStart) vEvent.getProperty(Property.DTSTART);
+    final DateProperty end = (DateProperty) vEvent.getProperty(Property.DTEND);
+    info.setTzStartOffsetInMinutes(start.getTimeZone().getRawOffset() / 1000 / 60 / 60);
+    info.setTzEndOffsetInMinutes(end.getTimeZone().getRawOffset() / 1000 / 60 / 60);
   }
 
   // creates a real unique id for the given event using a md5 hash on the whole event

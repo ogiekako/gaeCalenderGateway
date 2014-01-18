@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').service('IcalInfoService',
-  function ($http, $q, Config) {
+  function ($http, $q, Config, Utils) {
 
     this.getList = function () {
       var defer = $q.defer();
@@ -47,6 +47,16 @@ angular.module('frontendApp').service('IcalInfoService',
         });
 
       return defer.promise;
+    };
+
+    this.addToCalendar = function (idList) {
+      return Utils.handleResponse(
+        $http({
+          method: 'PUT',
+          url: Config.endpointUrl + 'ical/addToCalendar',
+          data: idList
+        }),
+        'Error adding items to calendar: ');
     };
 
   });
