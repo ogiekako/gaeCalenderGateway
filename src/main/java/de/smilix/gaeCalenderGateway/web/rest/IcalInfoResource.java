@@ -67,6 +67,7 @@ public class IcalInfoResource {
     info.setAttendees(icalInfo.getAttendees());
     info.setDescription(icalInfo.getDescription());
     info.setStatus(icalInfo.getStatus());
+    info.setRecurrence(icalInfo.getRecurrence());
 
     ICalInfoRepository.get().merge(info);
 
