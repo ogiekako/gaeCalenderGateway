@@ -3,8 +3,11 @@
 
     <p>
         You see all raw mails in the table below. Click to edit.
+    </p>
 
-    <table class="table table-hover ">
+    <waiting-progress msg="Loading raw mails..." show="{{loading}}"></waiting-progress>
+
+    <table class="table table-hover fade-animation" ng-if="!loading">
         <thead>
         <tr>
             <th>id</th>
@@ -23,7 +26,7 @@
         </tbody>
     </table>
     </p>
-    <p ng-if="rawMails.length === 0" class="alert alert-info">
+    <p ng-if="!loading && rawMails.length === 0" class="alert alert-info fade-animation">
         No raw mails found.
     </p>
 </div>

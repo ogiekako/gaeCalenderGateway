@@ -67,6 +67,15 @@ body {
   background: url('../images/ajax-loader.gif') center no-repeat transparent;
 }
 
+.waiting-progress {
+  text-align: center;
+}
+.waiting-progress__msg {
+  display: block;
+  padding:5px;
+  margin-top: 10px;
+}
+
 /* animations */
 .fade-animation.ng-enter,
 .fade-animation.ng-leave {
