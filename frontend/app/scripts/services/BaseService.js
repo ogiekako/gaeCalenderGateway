@@ -1,7 +1,16 @@
 'use strict';
 
 angular.module('frontendApp').service('BaseService',
-  function ($http, $q, Config) {
+  function ($http, $q, Config, Utils) {
+
+    this.getStats = function () {
+      return Utils.handleResponse(
+        $http({
+          method: 'GET',
+          url: Config.endpointUrl + 'base/stats'
+        }),
+        'Error getting stats: ');
+    };
 
     this.checkCredentials = function () {
       var defer = $q.defer();

@@ -1,11 +1,23 @@
-<div class="jumbotron">
-  <h1>Welcome</h1>
-  <p class="lead">
-    Always a pleasure scaffolding your apps.
-  </p>
-    todo:
+<h1>gaeCalendarGateway</h1>
+<p>
+    Have fun in this admin view.
+</p>
+
+<waiting-progress msg="Loading stats..." show="{{loading}}"></waiting-progress>
+
+<div ng-if="!loading">
+    <h2>Status</h2>
+    <ul class="stats-list list-group">
+        <a ng-href="{{o.link}}" class="list-group-item" ng-repeat="o in checks"
+           ng-class="{success: o.check(stats[o.id]), warning: !o.check(stats[o.id])}">
+            <span class="badge">{{stats[o.id]}}</span>
+            {{o.label}}
+        </a>
+    </ul>
+
+
+    <h2>todo</h2>
     <ul>
-        <li>hier eine übersicht (4 in queue x, 4 in queue y)</li>
         <li>warterad beim check</li>
         <li>status nach save/add</li>
     </ul>

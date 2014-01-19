@@ -11,13 +11,19 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.appengine.api.users.UserServiceFactory;
 
+import de.smilix.gaeCalenderGateway.common.Utils;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
+import de.smilix.gaeCalenderGateway.model.IcalInfo;
+import de.smilix.gaeCalenderGateway.model.RawMailIn.Status;
 import de.smilix.gaeCalenderGateway.service.AuthService;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
+import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
+import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 
 @Path("/base")
@@ -28,6 +34,23 @@ public class BaseResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Config getConfig() {
     return ConfigurationService.getConfig();
+  }
+  
+  @GET
+  @Path("/stats")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Map<String, Object> getStats() {
+    Config config = ConfigurationService.getConfig();
+    
+    Map<String, Object> response = new HashMap<>();
+    response.put("rawMailIn_errors", RawMailInRepository.get().getCountForStatus(Status.ERROR));
+    response.put("rawMailIn_incoming", RawMailInRepository.get().getCountForStatus(Status.INCOMING));
+    response.put("iCalInfo_add_errors", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.ADD_ERROR));
+    response.put("iCalInfo_parsed", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.PARSED));
+    response.put("user_selected", !Utils.isEmpty(config.getUserId()));
+    response.put("calendar_selected", !Utils.isEmpty(config.getCalendarId()));
+    
+    return response;
   }
   
   @PUT

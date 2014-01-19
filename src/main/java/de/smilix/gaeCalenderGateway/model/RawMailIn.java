@@ -19,7 +19,7 @@ import com.google.appengine.api.datastore.Text;
 public class RawMailIn extends DatastoreObject implements Serializable {
 
   public enum Status {
-    INCOMING, PROCESSED, ERROR; 
+    INCOMING, PROCESSED, ERROR;
   }
   
   @Id
