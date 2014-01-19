@@ -27,6 +27,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.google.api.services.calendar.model.Events;
 
+import de.smilix.gaeCalenderGateway.common.Version;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
@@ -103,7 +104,9 @@ public class GoogleCalService {
     Event event = new Event();
     event.setICalUID(ical.getuId());
     event.setSummary(ical.getSummary());
-    event.setDescription(ical.getDescription());
+    String description = ical.getDescription(); 
+    description += "\n$$CalAdd: " + Version.CURRENT + "$$";
+    event.setDescription(description);
     event.setLocation(ical.getLocation());
 
     event.setStart(makeTime(ical.getStartTimestamp(), ical.getTzStartOffsetInMinutes()));

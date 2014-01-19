@@ -21,6 +21,7 @@ import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import de.smilix.gaeCalenderGateway.common.Version;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 
 /**
@@ -100,7 +101,9 @@ public class ICalInfoFactory {
 
     info.setAttendees(attendeeList);
 
-    info.setDescription(getValueOrDefault(vEvent.getDescription(), ""));
+    String description = getValueOrDefault(vEvent.getDescription(), "--No description--");
+    description += "\n$$Parsed: " + Version.CURRENT + "$$";
+    info.setDescription(description);
 
 
     parseReccurence(vEvent, info);

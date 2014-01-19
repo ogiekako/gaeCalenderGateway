@@ -11,14 +11,14 @@ angular.module('frontendApp', [
 
       var ensureCredentials = {
         check: [
-          '$q', 'BaseService', 'GlobalError', 'User',
-          function (a, BaseService, GlobalError, User) {
+          '$q', 'BaseService', 'GlobalError', 'User', 'Version',
+          function ($q, BaseService, GlobalError, User, Version) {
             if (User.authValid) {
               return;
             }
 
             console.log('checking');
-            var defer = a.defer();
+            var defer = $q.defer();
 
             BaseService.checkCredentials().then(
               function ok(result) {
@@ -29,6 +29,8 @@ angular.module('frontendApp', [
                 }
                 User.authValid = true;
                 User.userId = result.currentUserId;
+                Version.id = result.version;
+                console.log('setting version', Version);
                 defer.resolve();
               },
               function fail(msg) {

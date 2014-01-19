@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
+import de.smilix.gaeCalenderGateway.common.Version;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
@@ -80,6 +81,7 @@ public class BaseResource {
     Map<String, Object> response = new HashMap<>();
     response.put("valid", hasClientCredentials);
     response.put("currentUserId", userId);
+    response.put("version", Version.CURRENT);
     
     return response;
   }
