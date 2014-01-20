@@ -5,7 +5,9 @@
     <p>You can edit some parts of the parsed event here.</p>
     <form class="form-horizontal" role="form">
         <form-entry label="Id"><p class="form-control-static">{{item.id}}</p></form-entry>
-        <form-entry label="uId"><p class="form-control-static">{{item.uId}}</p></form-entry>
+        <form-entry label="uId">
+            <input type="text" class="form-control" ng-model="item.uId"/>
+        </form-entry>
         <form-entry label="begin"><p class="form-control-static">{{item.startTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
         <form-entry label="end"><p class="form-control-static">{{item.endTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</p></form-entry>
         <form-entry label="recurrence">

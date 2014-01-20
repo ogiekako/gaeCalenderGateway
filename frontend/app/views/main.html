@@ -7,7 +7,7 @@
 
 <div ng-if="!loading">
     <h2>Status</h2>
-    
+
     <ul class="stats-list list-group">
         <a ng-href="{{o.link}}" class="list-group-item" ng-repeat="o in checks"
            ng-class="{success: o.check(stats[o.id]), warning: !o.check(stats[o.id])}">
