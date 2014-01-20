@@ -79,7 +79,7 @@ public class ICalInfoFactory {
 
     IcalInfo info = new IcalInfo();
 
-    info.setuId(generateUId(vEvent));
+    info.setuId(vEvent.getUid().getValue());
     info.setSummary(getValueOrDefault(vEvent.getSummary(), "~~No summary~~"));
     if (vEvent.getStartDate() == null) {
       throw new InvalidFormatException("Start date is missing.");

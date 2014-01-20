@@ -67,11 +67,11 @@ public class ProcessMailWorker extends HttpServlet {
 
     LOG.fine("Try to add the parsed event into Google calendar: " + iCalInfos.getId());
     try {
-      GoogleCalService.get().addEvent(iCalInfos);
-      iCalInfos.setStatus(IcalInfo.Status.ADD_SUCCESS);
+      IcalInfo.Status result = GoogleCalService.get().addEvent(iCalInfos);
+      iCalInfos.setStatus(result);
       LOG.info("New calendar entry added: " + iCalInfos.getId());
     } catch (Exception e) {
-      iCalInfos.setStatus(IcalInfo.Status.ADD_ERROR);
+      iCalInfos.setStatus(IcalInfo.Status.CAL_ERROR);
       LOG.log(Level.SEVERE, "Error during google calender connection.", e);
       return;
     } finally {

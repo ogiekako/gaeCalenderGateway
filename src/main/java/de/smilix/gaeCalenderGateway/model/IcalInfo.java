@@ -23,7 +23,11 @@ import de.smilix.gaeCalenderGateway.common.Utils;
 public class IcalInfo extends DatastoreObject implements Serializable {
 
   public enum Status {
-    PARSED, ADD_SUCCESS, ADD_ERROR;
+  PARSED, CAL_ERROR, CAL_ADDED, CAL_UPDATED, CAL_REMOVED,
+  @Deprecated
+  ADD_SUCCESS, 
+  @Deprecated
+  ADD_ERROR;
   }
 
   @Id

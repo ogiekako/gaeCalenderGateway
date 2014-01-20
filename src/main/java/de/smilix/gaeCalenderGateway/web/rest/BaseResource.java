@@ -46,7 +46,7 @@ public class BaseResource {
     Map<String, Object> response = new HashMap<>();
     response.put("rawMailIn_errors", RawMailInRepository.get().getCountForStatus(Status.ERROR));
     response.put("rawMailIn_incoming", RawMailInRepository.get().getCountForStatus(Status.INCOMING));
-    response.put("iCalInfo_add_errors", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.ADD_ERROR));
+    response.put("iCalInfo_add_errors", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.CAL_ERROR));
     response.put("iCalInfo_parsed", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.PARSED));
     response.put("user_selected", !Utils.isEmpty(config.getUserId()));
     response.put("calendar_selected", !Utils.isEmpty(config.getCalendarId()));

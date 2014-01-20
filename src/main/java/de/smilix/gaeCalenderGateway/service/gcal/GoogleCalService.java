@@ -31,6 +31,7 @@ import de.smilix.gaeCalenderGateway.common.Version;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
+import de.smilix.gaeCalenderGateway.model.IcalInfo.Status;
 import de.smilix.gaeCalenderGateway.service.AuthService;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 
@@ -94,7 +95,16 @@ public class GoogleCalService {
     }
   }
 
-  public void addEvent(IcalInfo ical) throws IOException {
+  /**
+   * Applies the event to the calendar. This can be 
+   * <li>a new event entry
+   * <li>an event update
+   * <li>a removed event
+   *  
+   * @param ical
+   * @throws IOException
+   */
+  public Status addEvent(IcalInfo ical) throws IOException {
     //    checkEventParameter(event);
 
     Config config = ConfigurationService.getConfig();
@@ -105,7 +115,7 @@ public class GoogleCalService {
     event.setICalUID(ical.getuId());
     event.setSummary(ical.getSummary());
     String description = ical.getDescription(); 
-    description += "\n$$CalAdd: " + Version.CURRENT + "$$";
+    description += "\n$$Cal: " + Version.CURRENT + "$$";
     event.setDescription(description);
     event.setLocation(ical.getLocation());
 
@@ -150,10 +160,13 @@ public class GoogleCalService {
       LOG.fine("com.google.api.services.calendar.model.Event: " + event.toPrettyString());
     }
 
+    Status result;
     try {
+      result = Status.CAL_ADDED;
       event = calendarSrv.events().insert(calendarId, event).execute();
     } catch (GoogleJsonResponseException e) {
       if (e.getDetails().getCode() == 409 /* duplicate */) {
+        result = Status.CAL_UPDATED;
         event = findAndUpdateEvent(calendarSrv, event);
       } else {
         throw e;
@@ -161,7 +174,8 @@ public class GoogleCalService {
     }
     LOG.info("Event to calendar added, id: " + event.getICalUID());
 
-
+    return result;
+    
     // OLD copy & paste
 
     // add attendees as description values, because they don't have an email address

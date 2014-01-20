@@ -91,12 +91,12 @@ public class IcalInfoResource {
         continue;
       }
       try {
-        GoogleCalService.get().addEvent(iCalInfos);
-        iCalInfos.setStatus(IcalInfo.Status.ADD_SUCCESS);
+        IcalInfo.Status result = GoogleCalService.get().addEvent(iCalInfos);
+        iCalInfos.setStatus(result);
         LOG.info("New calendar entry added: " + iCalInfos.getId());
         response.getSuccess().add(id);
       } catch (Exception e) {
-        iCalInfos.setStatus(IcalInfo.Status.ADD_ERROR);
+        iCalInfos.setStatus(IcalInfo.Status.CAL_ERROR);
         LOG.log(Level.SEVERE, "Error during google calender connection.", e);
         response.getErrors().put(id, "Error adding to calendar: " + e.getMessage());
       } finally {

@@ -11,7 +11,7 @@ angular.module('frontendApp').controller('IcalInfoDetailCtrl',
     // a item copy to detect changes
     var copy;
 
-    $scope.statusOptions = [ 'PARSED', 'ADD_SUCCESS', 'ADD_ERROR' ];
+    $scope.statusOptions = [ 'PARSED', 'CAL_ERROR', 'CAL_ADDED', 'CAL_UPDATED', 'CAL_REMOVED' ];
     $scope.action = false;
 
     $scope.save = function () {
