@@ -105,8 +105,9 @@ public class ICalInfoFactory {
     description += "\n$$Parsed: " + Version.CURRENT + "$$";
     info.setDescription(description);
 
-
     parseReccurence(vEvent, info);
+    boolean cancelEvent = "CANCELLED".equals(vEvent.getStatus().getValue());
+    info.setCancelEvent(cancelEvent);
 
     LOG.fine("Created ICal info: " + info.toShortSummary());
     LOG.finer("Description: " + info.getDescription());

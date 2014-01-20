@@ -11,11 +11,12 @@ public class Config {
    */
   public static final String TIME_ZONE = "Europe/Berlin";
   public static final int ALARM_MINUTES = 3;
+  public static final String EVENT_CANCEL_PREFIX = "";
   
   /**
    * There is only one config....
    */
-  public static Long CONFIG_ID = 1L;          
+  public static Long CONFIG_ID = 1L;
   
   @Id 
   private Long id = CONFIG_ID; 

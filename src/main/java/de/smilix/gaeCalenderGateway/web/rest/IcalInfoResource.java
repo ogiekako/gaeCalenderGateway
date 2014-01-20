@@ -91,7 +91,7 @@ public class IcalInfoResource {
         continue;
       }
       try {
-        IcalInfo.Status result = GoogleCalService.get().addEvent(iCalInfos);
+        IcalInfo.Status result = GoogleCalService.get().processEvent(iCalInfos);
         iCalInfos.setStatus(result);
         LOG.info("New calendar entry added: " + iCalInfos.getId());
         response.getSuccess().add(id);

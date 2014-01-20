@@ -47,6 +47,7 @@ public class IcalInfo extends DatastoreObject implements Serializable {
   private List<String> recurrence;
   private int tzStartOffsetInMinutes;
   private int tzEndOffsetInMinutes;
+  private boolean cancelEvent = false;
   private Status status = Status.PARSED;
 
   
@@ -168,12 +169,20 @@ public class IcalInfo extends DatastoreObject implements Serializable {
     this.tzEndOffsetInMinutes = tzEndOffsetInMinutes;
   }
 
+  public boolean isCancelEvent() {
+    return cancelEvent;
+  }
+
+  public void setCancelEvent(boolean cancelEvent) {
+    this.cancelEvent = cancelEvent;
+  }
+  
   @Override
   public String toString() {
     return String
-            .format("IcalInfo [id=%s, tsCreated=%s, uId=%s, summary=%s, startTimestamp=%s, endTimestamp=%s, location=%s, organizer=%s, attendees=%s, description=%s, recurrence=%s, tzStartOffsetInMinutes=%s, tzEndOffsetInMinutes=%s, status=%s]",
+            .format("IcalInfo [id=%s, tsCreated=%s, uId=%s, summary=%s, startTimestamp=%s, endTimestamp=%s, location=%s, organizer=%s, attendees=%s, description=%s, recurrence=%s, tzStartOffsetInMinutes=%s, tzEndOffsetInMinutes=%s, cancelEvent=%s, status=%s]",
                     id, tsCreated, uId, summary, startTimestamp, endTimestamp, location, organizer, attendees,
-                    description, recurrence, tzStartOffsetInMinutes, tzEndOffsetInMinutes, status);
+                    description, recurrence, tzStartOffsetInMinutes, tzEndOffsetInMinutes, cancelEvent, status);
   }
 
   public String toShortSummary() {

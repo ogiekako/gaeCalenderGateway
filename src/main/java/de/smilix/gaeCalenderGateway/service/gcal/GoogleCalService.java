@@ -8,15 +8,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.property.DateProperty;
-import net.fortuna.ical4j.model.property.DtStart;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.Calendar.Events.Delete;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
@@ -74,7 +71,7 @@ public class GoogleCalService {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
     listRequest.setSingleEvents(false);
-//    listRequest.setOrderBy("startTime"); // can't use this with singleEvents false
+    //    listRequest.setOrderBy("startTime"); // can't use this with singleEvents false
     listRequest.setTimeMin(new DateTime(since));
     //    listRequest.setTimeMin(new DateTime("2013-09-23T16:00:00+02:00"));
 
@@ -104,17 +101,19 @@ public class GoogleCalService {
    * @param ical
    * @throws IOException
    */
-  public Status addEvent(IcalInfo ical) throws IOException {
+  public Status processEvent(IcalInfo ical) throws IOException {
     //    checkEventParameter(event);
 
-    Config config = ConfigurationService.getConfig();
-    String calendarId = config.getCalendarId();
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
+
+    if (ical.isCancelEvent()) {
+      return removeEvent(calendarSrv, ical);
+    }
 
     Event event = new Event();
     event.setICalUID(ical.getuId());
     event.setSummary(ical.getSummary());
-    String description = ical.getDescription(); 
+    String description = ical.getDescription();
     description += "\n$$Cal: " + Version.CURRENT + "$$";
     event.setDescription(description);
     event.setLocation(ical.getLocation());
@@ -163,7 +162,7 @@ public class GoogleCalService {
     Status result;
     try {
       result = Status.CAL_ADDED;
-      event = calendarSrv.events().insert(calendarId, event).execute();
+      event = calendarSrv.events().insert(ConfigurationService.getConfig().getCalendarId(), event).execute();
     } catch (GoogleJsonResponseException e) {
       if (e.getDetails().getCode() == 409 /* duplicate */) {
         result = Status.CAL_UPDATED;
@@ -175,7 +174,7 @@ public class GoogleCalService {
     LOG.info("Event to calendar added, id: " + event.getICalUID());
 
     return result;
-    
+
     // OLD copy & paste
 
     // add attendees as description values, because they don't have an email address
@@ -203,6 +202,27 @@ public class GoogleCalService {
 
   }
 
+  private Status removeEvent(Calendar calendarSrv, IcalInfo ical) throws IOException {
+    LOG.info("Remove the event.");
+    String calendarId = ConfigurationService.getConfig().getCalendarId();
+
+    Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
+    listRequest.setMaxResults(4);
+    listRequest.setICalUID(ical.getuId());
+    listRequest.setFields("items/id");
+    List<Event> items = listRequest.execute().getItems();
+    if (items.size() != 1) {
+      throw new IllegalStateException(String.format(
+              "Searched for the iCal event by it's uid (%s), but found %d events!", ical.getuId(), items.size()));
+    }
+    
+    Delete deleteRequest = calendarSrv.events().delete(calendarId, items.get(0).getId());
+    deleteRequest.setSendNotifications(false);
+    deleteRequest.execute();
+
+    return Status.CAL_REMOVED;
+  }
+
   private Event findAndUpdateEvent(Calendar calendarSrv, Event event) throws IOException {
     LOG.info("Event already exists (Goolge API error 409 duplicate), try to find it's eventId and update it.");
     String calendarId = ConfigurationService.getConfig().getCalendarId();
@@ -211,9 +231,10 @@ public class GoogleCalService {
     list.setICalUID(event.getICalUID());
     List<Event> eventsList = list.execute().getItems();
     if (eventsList.size() != 1) {
-      throw new IllegalStateException("Tried to get the event for the duplicated event (icalUid: " + event.getICalUID() +"), but got this amount of event: " + eventsList.size());
+      throw new IllegalStateException("Tried to get the event for the duplicated event (icalUid: " + event.getICalUID()
+              + "), but got this amount of event: " + eventsList.size());
     }
-    
+
     String eventId = eventsList.get(0).getId();
     event.setSequence(eventsList.get(0).getSequence());
     return calendarSrv.events().update(calendarId, eventId, event).execute();
