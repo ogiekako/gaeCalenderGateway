@@ -237,6 +237,11 @@ public class GoogleCalService {
 
     String eventId = eventsList.get(0).getId();
     event.setSequence(eventsList.get(0).getSequence());
+    
+    String description = event.getDescription();
+    description += "\n$$Cal update: " + Version.CURRENT + "$$";
+    event.setDescription(description);
+    
     return calendarSrv.events().update(calendarId, eventId, event).execute();
   }
 
