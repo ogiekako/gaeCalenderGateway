@@ -1,13 +1,9 @@
 package de.smilix.gaeCalenderGateway.web;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +16,7 @@ import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 import de.smilix.gaeCalenderGateway.service.ical.ICalInfoFactory;
-import de.smilix.gaeCalenderGateway.service.mail.MailParser;
+import de.smilix.gaeCalenderGateway.service.mail.MailParserMime4j;
 
 public class ProcessMailWorker extends HttpServlet {
 
@@ -40,16 +36,15 @@ public class ProcessMailWorker extends HttpServlet {
     IcalInfo iCalInfos;
     ICalInfoRepository iCalInfoRepository;
     try {
-      MailParser parser = new MailParser();
-      MimeMessage mailMsg = parser.createFromString(rawMail.getRawMail());
-      String mail = parser.parse(mailMsg);
+      MailParserMime4j parser = new MailParserMime4j();
+      String plainTextCalendarData = parser.parse(rawMail.getRawMail());
 
-      if (Utils.isEmpty(mail)) {
+      if (Utils.isEmpty(plainTextCalendarData)) {
         LOG.severe("Mail did'nt match, see logs.");
         rawMail.setStatus(Status.ERROR);
         return;
       }
-      iCalInfos = ICalInfoFactory.get().create(mail);
+      iCalInfos = ICalInfoFactory.get().create(plainTextCalendarData);
 
       iCalInfoRepository = ICalInfoRepository.get();
       iCalInfoRepository.addEntry(iCalInfos);
