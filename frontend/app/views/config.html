@@ -1,6 +1,6 @@
 <h2>UserId</h2>
 <p>
-    Using currently this userId: <input type="text" readonly disabled value="{{conf.userId}}" />
+    Using currently this userId: <input type="text" readonly disabled value="{{conf.userId}}"/>
 </p>
 <p ng-if="currentUserId && currentUserId === conf.userId" class="alert alert-success">
     This is the your current userId. Everything is fine .
@@ -8,6 +8,17 @@
 <p ng-if="currentUserId && currentUserId !== conf.userId" class="alert alert-warning">
     This is NOT your current userId! YOUR id is {{currentUserId}}
 </p>
+
+<h2>Email on errors</h2>
+<p>The server can you notify if any error (e.g. failed parsing or failed calendar add) occur. You just have to enter a valid email address.</p>
+<form class="form-inline" role="form" ng-submit="updateContactEmail()">
+    <div class="form-group">
+        <label class="sr-only" for="mail">Email address</label>
+        <input type="email" class="form-control" id="mail" placeholder="Enter contact email" ng-model="conf.contactEmail" ng-disabled="data.waitingEmail" />
+    </div>
+    <button type="submit" class="btn btn-primary" ng-disabled="data.waitingEmail">Update email</button>
+    <button type="button" class="btn btn-danger" ng-click="disableContactEmail()" ng-disabled="data.waitingEmail">Disable Feature</button>
+</form>
 
 <h2>Calender</h2>
 You can select calender to write all events into.

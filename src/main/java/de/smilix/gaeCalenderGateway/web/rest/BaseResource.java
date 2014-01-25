@@ -11,7 +11,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -37,6 +36,26 @@ public class BaseResource {
     return ConfigurationService.getConfig();
   }
   
+  @PUT
+  @Path("/config/calendar")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void setCalendarId(CalendarIdParam param) {
+    Config config = ConfigurationService.getConfig();
+    config.setCalendarId(param.getId());
+    ConfigurationService.save(config);
+  }
+  
+  @PUT
+  @Path("/config/contactEmail")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  public void setContactEmail(ContactMailParam param) {
+    Config config = ConfigurationService.getConfig();
+    config.setContactEmail(param.getContactEmail());
+    ConfigurationService.save(config);
+  }
+  
   @GET
   @Path("/stats")
   @Produces(MediaType.APPLICATION_JSON)
@@ -54,16 +73,6 @@ public class BaseResource {
     return response;
   }
   
-  @PUT
-  @Path("/config/calendar")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void setCalendarId(CalendarIdParam param) {
-    Config config = ConfigurationService.getConfig();
-    config.setCalendarId(param.getId());
-    ConfigurationService.save(config);
-  }
-
   @GET
   @Path("/calendars")
   @Produces(MediaType.APPLICATION_JSON)
@@ -86,6 +95,17 @@ public class BaseResource {
     return response;
   }
   
+  public static class ContactMailParam {
+    private String contactEmail;
+
+    public String getContactEmail() {
+      return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+      this.contactEmail = contactEmail;
+    }
+  }
   
   public static class CalendarIdParam {
     private String id;

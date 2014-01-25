@@ -20,59 +20,55 @@ angular.module('frontendApp').service('BaseService',
         function error(response) {
           var data = response.data;
           $log.info('Got non 2xx response from credentials test. Most likely you have to login again.', (data.msg || data));
+          // return a resolved promise, so you just have to check the valid flag
           return $q.when({});
         });
     };
 
 
     this.getConfig = function () {
-      var defer = $q.defer();
+      return Utils.handleResponse(
+        $http({
+          method: 'GET',
+          url: Config.endpointUrl + 'base/config'
+        }),
+        'Error loading the config: ');
+    };
 
-      $http({method: 'GET', url: Config.endpointUrl + 'base/config'}).
-        success(function (data, status, headers, config) {
-          defer.resolve(data);
-        }).
-        error(function (data, status, headers, config) {
-          defer.reject('Error loading the config: ' + data.msg || data);
-        });
-
-      return defer.promise;
+    /**
+     * @param {string} email
+     * @returns {Promise}
+     */
+    this.setContactEmail = function (email) {
+      return Utils.handleResponse(
+        $http({
+          method: 'PUT',
+          url: Config.endpointUrl + 'base/config/contactEmail',
+          data: {
+            contactEmail: email
+          }
+        }),
+        'Error setting contact email: ');
     };
 
     this.listCalendars = function () {
-      var defer = $q.defer();
-
-      $http({method: 'GET', url: Config.endpointUrl + 'base/calendars'}).
-        success(function (data, status, headers, config) {
-          defer.resolve(data);
-        }).
-        error(function (data, status, headers, config) {
-          defer.reject('Error listing calendars: ' + data.msg || data);
-        });
-
-      return defer.promise;
-
+      return Utils.handleResponse(
+        $http({
+          method: 'GET',
+          url: Config.endpointUrl + 'base/calendars'
+        }),
+        'Error listing calendars: ');
     };
 
     this.setCalendar = function (calendarId) {
-      var defer = $q.defer();
-
-      $http(
-        {
+      return Utils.handleResponse(
+        $http({
           method: 'PUT',
           url: Config.endpointUrl + 'base/config/calendar',
           data: {
             id: calendarId
           }
-        }).
-        success(function (data, status, headers, config) {
-          defer.resolve(data);
-        }).
-        error(function (data, status, headers, config) {
-          defer.reject('Error setting calendarId: ' + data.msg || data);
-        });
-
-      return defer.promise;
-
+        }),
+        'Error setting calendarId: ');
     };
   });
