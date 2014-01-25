@@ -1,6 +1,7 @@
 package de.smilix.gaeCalenderGateway.web.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import de.smilix.gaeCalenderGateway.model.Contact;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
@@ -33,7 +35,9 @@ public class IcalInfoResource {
     List<IcalInfo> list = ICalInfoRepository.get().getAll("tsCreated desc");
     for (IcalInfo icalInfo : list) {
       icalInfo.chopDescription(30);
+      icalInfo.setAttendees(Collections.<Contact>emptyList());
     }
+    
     return list;
   }
 
@@ -64,7 +68,7 @@ public class IcalInfoResource {
     info.setStartTimestamp(icalInfo.getStartTimestamp());
     info.setEndTimestamp(icalInfo.getEndTimestamp());
     info.setLocation(icalInfo.getLocation());
-    info.setAttendees(icalInfo.getAttendees());
+//    info.setAttendees(icalInfo.getAttendees());
     info.setDescription(icalInfo.getDescription());
     info.setStatus(icalInfo.getStatus());
     info.setRecurrence(icalInfo.getRecurrence());

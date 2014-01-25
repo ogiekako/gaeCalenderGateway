@@ -27,6 +27,7 @@ import com.google.api.services.calendar.model.Events;
 import de.smilix.gaeCalenderGateway.common.Version;
 import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
+import de.smilix.gaeCalenderGateway.model.Contact;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.model.IcalInfo.Status;
 import de.smilix.gaeCalenderGateway.service.AuthService;
@@ -122,10 +123,10 @@ public class GoogleCalService {
     event.setEnd(makeTime(ical.getEndTimestamp(), ical.getTzEndOffsetInMinutes()));
 
     List<EventAttendee> attendees = new ArrayList<>();
-    for (String attendeeName : ical.getAttendees()) {
+    for (Contact attendee : ical.getAttendees()) {
       EventAttendee ea = new EventAttendee();
-      ea.setDisplayName(attendeeName);
-      ea.setEmail("none@localhost");
+      ea.setDisplayName(attendee.getName());
+      ea.setEmail(attendee.getEmail());
       attendees.add(ea);
     }
     event.setAttendees(attendees);
@@ -190,15 +191,6 @@ public class GoogleCalService {
     //    }
     //    description.append("------------- DESCRIPTION -------------\n").append(event.getDescription());
     //    myEntry.setContent(new PlainTextConstruct(description.toString()));
-
-
-    //    String rRule = 
-    //    "RRULE:FREQ=WEEKLY;COUNT=5;INTERVAL=2;BYDAY=WE;WKST=SU\r\n"+
-    //    "DTSTART;TZID=W. Europe Standard Time:20120328T100000\r\n"+
-    //    "DTEND;TZID=W. Europe Standard Time:20120328T121500";
-    //    Recurrence recur = new Recurrence();
-    //    recur.setValue(rRule);
-    //    myEntry.setRecurrence(recur);
 
   }
 

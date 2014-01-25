@@ -92,12 +92,12 @@ public class IcalInfo extends DatastoreObject implements Serializable {
     this.organizer = organizer;
   }
 
-  public List<String> getAttendees() {
-    return this.attendees;
+  public List<Contact> getAttendees() {
+    return Contact.convertStringList(this.attendees);
   }
 
-  public void setAttendees(List<String> attendees) {
-    this.attendees = attendees;
+  public void setAttendees(List<Contact> attendees) {
+    this.attendees = Contact.convertContactList(attendees);
   }
 
   public String getDescription() {

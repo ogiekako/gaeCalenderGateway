@@ -13,7 +13,7 @@ public class RestApplication extends Application {
     singletons.add(new BaseResource());
     singletons.add(new RawMailInResource());
     singletons.add(new IcalInfoResource());
-    singletons.add(new DebugResource());
+//    singletons.add(new DebugResource());
   }
   
   @Override

@@ -12,6 +12,7 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Content;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -22,12 +23,15 @@ import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import de.smilix.gaeCalenderGateway.common.Version;
+import de.smilix.gaeCalenderGateway.model.Contact;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 
 /**
  * @author Holger Cremer
  */
 public class ICalInfoFactory {
+
+  private static final String MAILTO_PREFIX = "mailto:";
 
   private static Logger LOG = Logger.getLogger(ICalInfoFactory.class.getName());
 
@@ -93,12 +97,11 @@ public class ICalInfoFactory {
     info.setOrganizer(getParameterValueOrDefault(vEvent.getOrganizer(), Cn.CN, "~~No organizer CN~~"));
 
     PropertyList attendees = vEvent.getProperties(Attendee.ATTENDEE);
-    List<String> attendeeList = new ArrayList<String>(attendees.size());
+    List<Contact> attendeeList = new ArrayList<>(attendees.size());
     for (Object property : attendees) {
       Attendee attendee = (Attendee) property;
-      attendeeList.add(getParameterValueOrDefault(attendee, Cn.CN, "~~No attendee CN~~"));
+      attendeeList.add(createContact(attendee));
     }
-
     info.setAttendees(attendeeList);
 
     String description = getValueOrDefault(vEvent.getDescription(), "--No description--");
@@ -113,6 +116,21 @@ public class ICalInfoFactory {
     LOG.finer("Description: " + info.getDescription());
 
     return info;
+  }
+
+  private Contact createContact(Attendee attendee) {
+    String email = attendee.getValue();
+    if (email.toLowerCase().startsWith(MAILTO_PREFIX)) {
+      email = email.substring(MAILTO_PREFIX.length());
+    }
+    String name = email;
+    
+    Parameter cnParam = attendee.getParameter("CN");
+    if (cnParam != null) {
+      name = cnParam.getValue();
+    }
+    
+    return new Contact(name, email);
   }
 
   private void parseReccurence(VEvent vEvent, IcalInfo info) {
