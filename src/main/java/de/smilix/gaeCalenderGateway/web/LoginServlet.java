@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeServlet;
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import de.smilix.gaeCalenderGateway.model.Config;
@@ -34,11 +35,12 @@ public class LoginServlet extends AbstractAppEngineAuthorizationCodeServlet {
   
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
+    User currentUser = UserServiceFactory.getUserService().getCurrentUser();
     
     Config config = ConfigurationService.getConfig();
-    config.setUserId(userId);
-    LOG.info("Setting userId: " + userId);
+    config.setUserId(currentUser.getUserId());
+    config.setSenderEmail(currentUser.getEmail());
+    LOG.info(String.format("Setting userId '%s' and email '%s'.", currentUser.getUserId(), currentUser.getEmail()));
     ConfigurationService.save(config);
     
     resp.sendRedirect("/app/");

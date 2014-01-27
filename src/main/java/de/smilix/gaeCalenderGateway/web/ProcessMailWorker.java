@@ -17,6 +17,7 @@ import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 import de.smilix.gaeCalenderGateway.service.ical.ICalInfoFactory;
 import de.smilix.gaeCalenderGateway.service.mail.MailParserMime4j;
+import de.smilix.gaeCalenderGateway.service.mail.SendMail;
 
 public class ProcessMailWorker extends HttpServlet {
 
@@ -35,13 +36,15 @@ public class ProcessMailWorker extends HttpServlet {
 
     IcalInfo iCalInfos;
     ICalInfoRepository iCalInfoRepository;
+    String plainTextCalendarData = null;
     try {
       MailParserMime4j parser = new MailParserMime4j();
-      String plainTextCalendarData = parser.parse(rawMail.getRawMail());
+      plainTextCalendarData = parser.parse(rawMail.getRawMail());
 
       if (Utils.isEmpty(plainTextCalendarData)) {
-        LOG.severe("Mail did'nt match, see logs.");
+        LOG.severe("Mail didn't match, see logs.");
         rawMail.setStatus(Status.ERROR);
+        new SendMail().sendErrorMail("Mail parse error for rawMail with id: " + id);
         return;
       }
       iCalInfos = ICalInfoFactory.get().create(plainTextCalendarData);
@@ -54,6 +57,10 @@ public class ProcessMailWorker extends HttpServlet {
     } catch (Exception e) {
       rawMail.setStatus(Status.ERROR);
       LOG.log(Level.SEVERE, "Error during iCalInfo creation.", e);
+      new SendMail().sendErrorMail("Error during iCalInfo creation: " + e.getMessage()
+              + "\n\nStackTrace:\n" + Utils.excpToString(e)
+              + "\n\nplainTextCalendarData:\n"
+              + (plainTextCalendarData != null ? plainTextCalendarData : "not available"));
       return;
     } finally {
       // always save the new status
@@ -68,6 +75,9 @@ public class ProcessMailWorker extends HttpServlet {
     } catch (Exception e) {
       iCalInfos.setStatus(IcalInfo.Status.CAL_ERROR);
       LOG.log(Level.SEVERE, "Error during google calender connection.", e);
+      new SendMail().sendErrorMail("Can't applay the event to calendar: " + e.getMessage()
+              + "\n\nStackTrace:\n" + Utils.excpToString(e)
+              + "\n\nEvent:\n" + iCalInfos);
       return;
     } finally {
       iCalInfoRepository.merge(iCalInfos);

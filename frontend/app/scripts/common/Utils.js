@@ -28,4 +28,14 @@ angular.module('frontendApp').service('Utils',
       }
       return text.substring(0, maxLen - 3) + '...';
     };
+
+    /**
+     * Converts any non string argument to string (except null, undefined). See the test for examples.
+     *
+     * @param {string} text
+     * @returns {boolean} true
+     */
+    this.emptyStr = function (text) {
+      return text === undefined || text === null || text.toString().length === 0;
+    };
   });

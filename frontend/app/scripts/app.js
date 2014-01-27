@@ -17,7 +17,6 @@ angular.module('frontendApp', [
               return;
             }
 
-            console.log('checking');
             var defer = $q.defer();
 
             BaseService.checkCredentials().then(
@@ -84,11 +83,10 @@ angular.module('frontendApp', [
         });
     }
   ]);
-//  .run([
-//    '$rootScope', 'GlobalError',
-//    function ($rootScope, GlobalError) {
-//      $rootScope.$on('$routeChangeError', function(ngEvent, current, prev, rejection) {
-//        console.log(ngEvent, current, prev, rejection);
-//      });
-//    }
-//  ]);
+
+angular.module('frontendApp').run(
+  function ($rootScope, Utils) {
+    // define this helpful function on the root scope to get used in every .html file.
+    $rootScope.emptyStr = Utils.emptyStr;
+  }
+);

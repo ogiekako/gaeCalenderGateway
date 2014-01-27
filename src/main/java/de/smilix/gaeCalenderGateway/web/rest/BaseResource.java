@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -29,33 +27,6 @@ import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 @Path("/base")
 public class BaseResource {
 
-  @GET
-  @Path("/config")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Config getConfig() {
-    return ConfigurationService.getConfig();
-  }
-  
-  @PUT
-  @Path("/config/calendar")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void setCalendarId(CalendarIdParam param) {
-    Config config = ConfigurationService.getConfig();
-    config.setCalendarId(param.getId());
-    ConfigurationService.save(config);
-  }
-  
-  @PUT
-  @Path("/config/contactEmail")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  public void setContactEmail(ContactMailParam param) {
-    Config config = ConfigurationService.getConfig();
-    config.setContactEmail(param.getContactEmail());
-    ConfigurationService.save(config);
-  }
-  
   @GET
   @Path("/stats")
   @Produces(MediaType.APPLICATION_JSON)
@@ -95,27 +66,4 @@ public class BaseResource {
     return response;
   }
   
-  public static class ContactMailParam {
-    private String contactEmail;
-
-    public String getContactEmail() {
-      return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-      this.contactEmail = contactEmail;
-    }
-  }
-  
-  public static class CalendarIdParam {
-    private String id;
-
-    public String getId() {
-      return id;
-    }
-
-    public void setId(String id) {
-      this.id = id;
-    }
-  }
 }

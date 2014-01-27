@@ -26,31 +26,6 @@ angular.module('frontendApp').service('BaseService',
     };
 
 
-    this.getConfig = function () {
-      return Utils.handleResponse(
-        $http({
-          method: 'GET',
-          url: Config.endpointUrl + 'base/config'
-        }),
-        'Error loading the config: ');
-    };
-
-    /**
-     * @param {string} email
-     * @returns {Promise}
-     */
-    this.setContactEmail = function (email) {
-      return Utils.handleResponse(
-        $http({
-          method: 'PUT',
-          url: Config.endpointUrl + 'base/config/contactEmail',
-          data: {
-            contactEmail: email
-          }
-        }),
-        'Error setting contact email: ');
-    };
-
     this.listCalendars = function () {
       return Utils.handleResponse(
         $http({
@@ -58,17 +33,5 @@ angular.module('frontendApp').service('BaseService',
           url: Config.endpointUrl + 'base/calendars'
         }),
         'Error listing calendars: ');
-    };
-
-    this.setCalendar = function (calendarId) {
-      return Utils.handleResponse(
-        $http({
-          method: 'PUT',
-          url: Config.endpointUrl + 'base/config/calendar',
-          data: {
-            id: calendarId
-          }
-        }),
-        'Error setting calendarId: ');
     };
   });

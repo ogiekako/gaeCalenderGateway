@@ -11,13 +11,39 @@
 
 <h2>Email on errors</h2>
 <p>The server can you notify if any error (e.g. failed parsing or failed calendar add) occur. You just have to enter a valid email address.</p>
-<form class="form-inline" role="form" ng-submit="updateContactEmail()">
+<form class="form-horizontal" role="form" ng-submit="updateContactEmail()">
     <div class="form-group">
-        <label class="sr-only" for="mail">Email address</label>
-        <input type="email" class="form-control" id="mail" placeholder="Enter contact email" ng-model="conf.contactEmail" ng-disabled="data.waitingEmail" />
+        <label class="col-sm-2 control-label">Sender address:</label>
+        <div class="col-sm-3">
+            <p class="form-control-static">{{conf.senderEmail}} </p>
+        </div>
+        <div class="col-sm-7">
+            <p class="form-control-static" ng-if="!emptyStr(conf.senderEmail)">(This should be your Google account address.)</p>
+            <div class="alert alert-warning" ng-if="emptyStr(conf.senderEmail)">This should NOT be empty! Mail sending will not work. Try to go through the login again
+                <a href="/login">with this link</a>.
+            </div>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary" ng-disabled="data.waitingEmail">Update email</button>
-    <button type="button" class="btn btn-danger" ng-click="disableContactEmail()" ng-disabled="data.waitingEmail">Disable Feature</button>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="mail">Contact address:</label>
+        <div class="col-sm-3">
+            <input type="email" class="form-control" id="mail" placeholder="Enter contact email"
+                   ng-model="ui.contactEmail" ng-disabled="ui.waitingEmail" />
+        </div>
+        <div class="col-sm-7">
+            <p class="form-control-static" ng-if="emptyStr(conf.contactEmail)">(Feature is disabled.)</p>
+            <p class="form-control-static" ng-if="!emptyStr(conf.senderEmail) && !emptyStr(conf.contactEmail)">
+                <button class="btn btn-link" ng-click="sendTestMail()" ng-disabled="ui.waitingEmail">send test mail</button>
+                <span class=""> {{ui.mailTestResult}}</span>
+            </p>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col sm-3">
+            <button type="button" class="btn btn-danger" ng-click="disableContactEmail()" ng-disabled="ui.waitingEmail">Disable Feature</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="ui.waitingEmail">Update email</button>
+        </div>
+    </div>
 </form>
 
 <h2>Calender</h2>
@@ -27,11 +53,11 @@ You can select calender to write all events into.
     No calendar id is configured! Please select a calendar as backend.
 </div>
 
-<button class="btn btn-default" ng-click="listCalendars()" ng-disabled="data.calendarListLoading">
-    List available calendars<span ng-show="data.calendarListLoading"> ...</span>
+<button class="btn btn-default" ng-click="listCalendars()" ng-disabled="ui.calendarListLoading">
+    List available calendars<span ng-show="ui.calendarListLoading"> ...</span>
 </button>
 
-<div class="config__calendarList" ng-if="data.calendarList.length > 0">
+<div class="config__calendarList" ng-if="ui.calendarList.length > 0">
     <table class="table">
         <thead>
         <tr>
@@ -41,7 +67,7 @@ You can select calender to write all events into.
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="cal in data.calendarList" ng-class="{warning: cal.id === conf.calendarId}">
+        <tr ng-repeat="cal in ui.calendarList" ng-class="{warning: cal.id === conf.calendarId}">
             <td>{{cal.id}}</td>
             <td>{{cal.summary}}</td>
             <td>

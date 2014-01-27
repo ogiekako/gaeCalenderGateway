@@ -26,6 +26,8 @@ public class Config {
   private String calendarId;
   
   private String contactEmail;
+  
+  private String senderEmail;
 
   public String getUserId() { 
     return userId;
@@ -51,10 +53,18 @@ public class Config {
     this.contactEmail = contactEmail;
   }
 
+  public String getSenderEmail() {
+    return senderEmail;
+  }
+
+  public void setSenderEmail(String senderEmail) {
+    this.senderEmail = senderEmail;
+  }
+
   @Override
   public String toString() {
-    return String.format("Config [id=%s, userId=%s, calendarId=%s, contactEmail=%s]", id, userId, calendarId,
-            contactEmail);
+    return String.format("Config [id=%s, userId=%s, calendarId=%s, contactEmail=%s, senderEmail=%s]", id, userId,
+            calendarId, contactEmail, senderEmail);
   }
 
 }
