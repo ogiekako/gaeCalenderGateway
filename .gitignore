@@ -8,3 +8,4 @@ src/main/webapp/WEB-INF/appengine-generated/
 src/main/webapp/WEB-INF/classes/
 frontend/.idea/
 src/main/webapp/app/
+src/main/resources/client_secrets.json
