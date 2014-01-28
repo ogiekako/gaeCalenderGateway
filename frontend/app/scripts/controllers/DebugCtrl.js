@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').controller('DebugCtrl',
-  function ($scope, BaseService, DebugService, Utils) {
+  function ($scope, ConfigService, DebugService, Utils) {
     var DAY_IN_MS = 1000 * 60 * 60 * 24;
 
     function addPreviews(eventData) {
@@ -16,7 +16,7 @@ angular.module('frontendApp').controller('DebugCtrl',
       days: 30
     };
 
-    BaseService.getConfig().then(
+    ConfigService.getConfig().then(
       function ok(config) {
         $scope.calendarId = config.calendarId;
       },
