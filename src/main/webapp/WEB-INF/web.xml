@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+  <!-- 
+    Restrict the access to everything to the role admin. 
+    With this role only the registered developer can access this app. 
+    See: https://developers.google.com/appengine/docs/java/config/webxml#Security_and_Authentication
+   -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>everything</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+
   <!--  rest api -->
     <context-param>
       <param-name>resteasy.servlet.mapping.prefix</param-name>
@@ -17,15 +32,6 @@
                 <servlet-name>Resteasy</servlet-name>
                 <url-pattern>/rest/*</url-pattern>
         </servlet-mapping>
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>any</web-resource-name>
-      <url-pattern>/rest/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>  
   
   <!--  oAuth -->
   <servlet>
@@ -36,15 +42,6 @@
     <servlet-name>oauth2Callback</servlet-name>
     <url-pattern>/oauth2callback/*</url-pattern>
   </servlet-mapping>
-   <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>any</web-resource-name>
-      <url-pattern>/oauth2callback/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
 
   <!-- login -->
     <servlet>
@@ -57,15 +54,6 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
-        <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>any</web-resource-name>
-      <url-pattern>/login</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
 
   <!-- recieve emails -->
   <servlet>
@@ -82,16 +70,6 @@
     <url-pattern>/debug/mail/*</url-pattern>
   </servlet-mapping>
   
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>mail</web-resource-name>
-      <url-pattern>/_ah/mail/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
-  <!-- recieve emails -->
   
   <!-- the task    -->
                   <servlet>
@@ -104,17 +82,6 @@
         <servlet-name>processMailWorker</servlet-name>
         <url-pattern>/tasks/processMailWorker</url-pattern>
     </servlet-mapping>
-  
-  <!-- secure the task queue -->
-  <security-constraint>
-    <web-resource-collection>
-        <web-resource-name>tasks</web-resource-name>
-        <url-pattern>/tasks/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-        <role-name>admin</role-name>
-    </auth-constraint>
-</security-constraint>
   
 
     <welcome-file-list>

@@ -18,12 +18,6 @@ angular.module('frontendApp').service('BaseService',
           return response.data;
         },
         function error(response) {
-          if (response.status >= 300 && response.status < 400) {
-            var data = response.data;
-            $log.info('Got non 3xx response from credentials test. Most likely you have to login again.', (data.msg || data));
-            // return a resolved promise, so you just have to check the valid flag
-            return $q.when({});
-          }
           return $q.reject(response.data);
         });
     };
