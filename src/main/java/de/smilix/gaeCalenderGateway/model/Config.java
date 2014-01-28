@@ -11,7 +11,6 @@ public class Config {
    */
   public static final String TIME_ZONE = "Europe/Berlin";
   public static final int ALARM_MINUTES = 3;
-  public static final String EVENT_CANCEL_PREFIX = "";
   
   /**
    * There is only one config....
