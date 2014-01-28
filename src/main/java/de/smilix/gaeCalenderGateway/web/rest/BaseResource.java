@@ -18,7 +18,8 @@ import de.smilix.gaeCalenderGateway.model.CalendarInfo;
 import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.model.RawMailIn.Status;
-import de.smilix.gaeCalenderGateway.service.AuthService;
+import de.smilix.gaeCalenderGateway.service.auth.AuthException;
+import de.smilix.gaeCalenderGateway.service.auth.AuthService;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
@@ -47,14 +48,14 @@ public class BaseResource {
   @GET
   @Path("/calendars")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<CalendarInfo> getCalenders() throws IOException {
+  public List<CalendarInfo> getCalenders() throws IOException, AuthException {
     return GoogleCalService.get().getAllCalenders();
   }
   
   @GET
   @Path("/credentials")
   @Produces(MediaType.APPLICATION_JSON)
-  public Map<String, Object> credentialStatus() throws IOException {
+  public Map<String, Object> credentialStatus() throws IOException, AuthException {
     boolean hasClientCredentials = AuthService.get().hasClientCredentials();
     String userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();
 

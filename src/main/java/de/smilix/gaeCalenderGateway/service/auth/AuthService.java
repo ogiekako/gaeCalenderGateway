@@ -12,9 +12,10 @@
  * the License.
  */
 
-package de.smilix.gaeCalenderGateway.service;
+package de.smilix.gaeCalenderGateway.service.auth;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -30,7 +31,6 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Preconditions;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
@@ -41,15 +41,16 @@ import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 public class AuthService {
 
   private static final Logger LOG = Logger.getLogger(AuthService.class.getName());
-  
-  
+
+  private static final String CLIENT_SECRETS_JSON = "/client_secrets.json";
+
   /**
    * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
    * globally shared instance across your application.
    */
   private static final AppEngineDataStoreFactory DATA_STORE_FACTORY =
           AppEngineDataStoreFactory.getDefaultInstance();
-  
+
   /** Global instance of the HTTP transport. */
   static final HttpTransport HTTP_TRANSPORT = new UrlFetchTransport();
 
@@ -72,15 +73,24 @@ public class AuthService {
   private AuthService() {
   }
 
-  private GoogleClientSecrets getClientCredential() throws IOException {
+  private GoogleClientSecrets getClientCredential() throws AuthException {
     if (this.clientSecrets == null) {
-      this.clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-              new InputStreamReader(AuthService.class.getResourceAsStream("/client_secrets.json")));
+      InputStream ressourceStream = AuthService.class.getResourceAsStream(CLIENT_SECRETS_JSON);
+      if (ressourceStream == null) {
+        throw new AuthException("No '" + CLIENT_SECRETS_JSON + "' file found.");
+      }
 
-      Preconditions.checkArgument(!this.clientSecrets.getDetails().getClientId().startsWith("Enter ")
-              && !this.clientSecrets.getDetails().getClientSecret().startsWith("Enter "),
-              "Download client_secrets.json file from https://code.google.com/apis/console/"
-                      + "?api=calendar into calendar-appengine-sample/src/main/resources/client_secrets.json");
+
+      try {
+        this.clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(ressourceStream));
+      } catch (IOException e) {
+        throw new AuthException("Error loading '" + CLIENT_SECRETS_JSON + "' file: " + e.getMessage(), e);
+      }
+
+      if (Utils.isEmpty(this.clientSecrets.getDetails().getClientId())
+              || Utils.isEmpty(this.clientSecrets.getDetails().getClientSecret())) {
+        throw new AuthException("The '" + CLIENT_SECRETS_JSON + "' file is incomplete.");
+      }
     }
     return this.clientSecrets;
   }
@@ -91,7 +101,7 @@ public class AuthService {
     return url.build();
   }
 
-  public GoogleAuthorizationCodeFlow newFlow() throws IOException {
+  public GoogleAuthorizationCodeFlow newFlow() throws IOException, AuthException {
     return new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
             getClientCredential(), Collections.singleton(CalendarScopes.CALENDAR)).setDataStoreFactory(
             DATA_STORE_FACTORY).setAccessType("offline")
@@ -99,7 +109,7 @@ public class AuthService {
             .build();
   }
 
-  public boolean hasClientCredentials() throws IOException {
+  public boolean hasClientCredentials() throws IOException, AuthException {
     String userId = ConfigurationService.getConfig().getUserId();
     if (Utils.isEmpty(userId)) {
       LOG.fine("userId is empty");
@@ -119,7 +129,7 @@ public class AuthService {
     return result;
   }
 
-  public Calendar loadCalendarClient() throws IOException {
+  public Calendar loadCalendarClient() throws IOException, AuthException {
     String userId = ConfigurationService.getConfig().getUserId();
     if (Utils.isEmpty(userId)) {
       throw new IllegalStateException("UserId must set before.");

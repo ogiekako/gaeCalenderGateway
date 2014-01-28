@@ -26,7 +26,8 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.appengine.auth.oauth2.AbstractAppEngineAuthorizationCodeCallbackServlet;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import de.smilix.gaeCalenderGateway.service.AuthService;
+import de.smilix.gaeCalenderGateway.service.auth.AuthException;
+import de.smilix.gaeCalenderGateway.service.auth.AuthService;
 
 /**
  * HTTP servlet to process access granted from user.
@@ -60,6 +61,10 @@ public class OAuth2Callback extends AbstractAppEngineAuthorizationCodeCallbackSe
 
   @Override
   protected AuthorizationCodeFlow initializeFlow() throws IOException {
-    return AuthService.get().newFlow();
+    try {
+      return AuthService.get().newFlow();
+    } catch (AuthException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

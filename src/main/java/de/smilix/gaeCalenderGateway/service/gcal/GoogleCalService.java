@@ -30,7 +30,8 @@ import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.Contact;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.model.IcalInfo.Status;
-import de.smilix.gaeCalenderGateway.service.AuthService;
+import de.smilix.gaeCalenderGateway.service.auth.AuthException;
+import de.smilix.gaeCalenderGateway.service.auth.AuthService;
 import de.smilix.gaeCalenderGateway.service.data.ConfigurationService;
 
 public class GoogleCalService {
@@ -49,7 +50,7 @@ public class GoogleCalService {
   private GoogleCalService() {
   }
 
-  public List<CalendarInfo> getAllCalenders() throws IOException {
+  public List<CalendarInfo> getAllCalenders() throws IOException, AuthException {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.CalendarList.List listRequest = calendarSrv.calendarList().list();
     listRequest.setFields("items(id,summary)");
@@ -68,7 +69,7 @@ public class GoogleCalService {
   }
 
   // https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=de
-  public List<Event> getAllEvents(String calendarId, Date since) throws IOException {
+  public List<Event> getAllEvents(String calendarId, Date since) throws IOException, AuthException {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
     listRequest.setSingleEvents(false);
@@ -101,8 +102,9 @@ public class GoogleCalService {
    *  
    * @param ical
    * @throws IOException
+   * @throws AuthException 
    */
-  public Status processEvent(IcalInfo ical) throws IOException {
+  public Status processEvent(IcalInfo ical) throws IOException, AuthException {
     //    checkEventParameter(event);
 
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
@@ -244,7 +246,7 @@ public class GoogleCalService {
     return time;
   }
 
-  public void addTestEvent(IcalInfo event) throws IOException {
+  public void addTestEvent(IcalInfo event) throws IOException, AuthException {
     Config config = ConfigurationService.getConfig();
 
     String calendarId = config.getCalendarId();
