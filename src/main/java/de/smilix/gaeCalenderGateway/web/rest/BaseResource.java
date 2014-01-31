@@ -41,6 +41,7 @@ public class BaseResource {
     response.put("iCalInfo_parsed", ICalInfoRepository.get().getCountForStatus(IcalInfo.Status.PARSED));
     response.put("user_selected", !Utils.isEmpty(config.getUserId()));
     response.put("calendar_selected", !Utils.isEmpty(config.getCalendarId()));
+    response.put("contact_entered", !Utils.isEmpty(config.getContactEmail()));
     
     return response;
   }

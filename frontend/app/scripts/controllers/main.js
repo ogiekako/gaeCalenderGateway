@@ -19,6 +19,7 @@ angular.module('frontendApp').controller('MainCtrl',
     $scope.checks = [
       { id: 'user_selected', label: 'User selected', link: '#/config', check: boolCheck},
       { id: 'calendar_selected', label: 'Calendar selected', link: '#/config', check: boolCheck},
+      { id: 'contact_entered', label: 'Contact mail entered', link: '#/config', check: boolCheck},
       { id: 'rawMailIn_incoming', label: 'Waiting RawMails', link: '#/rawMailIn', check: numberCheck},
       { id: 'rawMailIn_errors', label: 'Error RawMails', link: '#/rawMailIn', check: numberCheck},
       { id: 'iCalInfo_parsed', label: '(Only) parsed iCalInfo', link: '#/ical', check: numberCheck },
