@@ -10,7 +10,6 @@
     <table class="table table-hover fade-animation" ng-if="!loading">
         <thead>
         <tr>
-            <th>id/uid</th>
             <th>summary</th>
             <th>start</th>
             <th>end</th>
@@ -21,11 +20,11 @@
             <th>cancelEvent</th>
             <th>recieved</th>
             <th>status</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="ical in list" ng-click="edit(ical.id)">
-            <td title="{{ical.id}} / {{ical.uId}}"><span class="glyphicon glyphicon-certificate"></span></td>
+        <tr ng-repeat="ical in list" class="fade-animation" ng-click="edit(ical.id)">
             <td>{{ical.summary}}</td>
             <td>{{ical.startTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</td>
             <td>{{ical.endTimestamp | date:'dd-MM-yyyy HH:mm:ss'}}</td>
@@ -36,6 +35,9 @@
             <td>{{ical.cancelEvent}}</td>
             <td>{{ical.tsCreated | date:'dd-MM-yyyy HH:mm:ss' }}</td>
             <td>{{ical.status}}</td>
+            <td><button class="btn btn-danger" title="Delete this entry" ng-click="delete($index, $event)">
+                <i class="glyphicon glyphicon-remove"></i></button>
+            </td>
         </tr>
         </tbody>
     </table>

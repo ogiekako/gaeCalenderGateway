@@ -49,4 +49,15 @@ public abstract class AbstractRepository<E> {
       em.close();
     }
   }
+  
+  public void delete(Long id) {
+    EntityManager em = EMF.get().createEntityManager();
+    try {
+      Query query = em.createQuery("delete from " + this.type.getSimpleName() + " x where x.id = :id");
+      query.setParameter("id", id);
+      query.executeUpdate();
+    } finally {
+      em.close();
+    }
+  }
 }

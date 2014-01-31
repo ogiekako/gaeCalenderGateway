@@ -48,4 +48,13 @@ angular.module('frontendApp').service('RawMailInService',
 
       return defer.promise;
     };
+
+    this.deleteItem = function (id) {
+      return Utils.handleResponse(
+        $http({
+          method: 'DELETE',
+          url: Config.endpointUrl + 'rawMailIn/item/' + id
+        }),
+        'Error deleting raw mail item: ');
+    };
   });

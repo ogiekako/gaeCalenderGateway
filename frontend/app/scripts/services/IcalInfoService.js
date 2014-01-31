@@ -59,4 +59,13 @@ angular.module('frontendApp').service('IcalInfoService',
         'Error adding items to calendar: ');
     };
 
+    this.deleteItem = function (id) {
+      return Utils.handleResponse(
+        $http({
+          method: 'DELETE',
+          url: Config.endpointUrl + 'ical/item/' + id
+        }),
+        'Error deleting ical item: ');
+    };
+
   });

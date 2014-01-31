@@ -3,6 +3,7 @@ package de.smilix.gaeCalenderGateway.web.rest;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -54,6 +55,15 @@ public class RawMailInResource {
     mail.setRawMail(rawMailIn.getRawMail());
     RawMailInRepository.get().merge(mail);
 
+    return Response.ok().build();
+  }
+  
+  @DELETE
+  @Path("/item/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteItem(@PathParam("id") Long id) {
+    RawMailInRepository.get().delete(id);
+    
     return Response.ok().build();
   }
 }

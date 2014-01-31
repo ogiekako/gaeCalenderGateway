@@ -8,10 +8,7 @@ angular.module('frontendApp').controller('IcalInfoCtrl',
       $scope.loading = false;
     }
 
-    $scope.edit = function (id) {
-      $location.path('/ical/' + id);
-    };
-
+    /* init */
     $scope.loading = true;
     $scope.list = [];
 
@@ -22,5 +19,20 @@ angular.module('frontendApp').controller('IcalInfoCtrl',
       },
       handleError
     );
+
+    /* scope functions */
+    $scope.edit = function (id) {
+      $location.path('/ical/' + id);
+    };
+
+    $scope.delete = function (index, event) {
+      event.stopPropagation();
+      IcalInfoService.deleteItem($scope.list[index].id).then(
+        function ok() {
+          $scope.list.splice(index, 1);
+        },
+        handleError
+      );
+    };
 
   });

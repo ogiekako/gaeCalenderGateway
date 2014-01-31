@@ -114,11 +114,8 @@ body {
 /* animations */
 .fade-animation.ng-enter,
 .fade-animation.ng-leave {
-  -webkit-transition:0.5s linear all;
   transition:0.5s linear all;
 
-  /* remember to add this */
-  display:block!important;
   opacity:1;
 }
 

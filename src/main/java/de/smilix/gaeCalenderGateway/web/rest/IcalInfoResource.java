@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 import de.smilix.gaeCalenderGateway.model.Contact;
 import de.smilix.gaeCalenderGateway.model.IcalInfo;
 import de.smilix.gaeCalenderGateway.service.data.ICalInfoRepository;
+import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 import de.smilix.gaeCalenderGateway.service.gcal.GoogleCalService;
 
 @Path("/ical")
@@ -109,6 +111,16 @@ public class IcalInfoResource {
     }
     
     return Response.ok(response).build();
+  }
+  
+
+  @DELETE
+  @Path("/item/{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response deleteItem(@PathParam("id") Long id) {
+    ICalInfoRepository.get().delete(id);
+    
+    return Response.ok().build();
   }
   
   private static class AddToCalResponse {

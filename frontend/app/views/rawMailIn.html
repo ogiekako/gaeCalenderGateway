@@ -14,14 +14,18 @@
             <th>content (preview)</th>
             <th>recieved</th>
             <th>status</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="mail in rawMails" ng-click="edit(mail.id)">
+        <tr ng-repeat="mail in rawMails" class="fade-animation" ng-click="edit(mail.id)">
             <td>{{mail.id}}</td>
             <td>{{mail.rawMail}}</td>
             <td>{{mail.recieved | date:'dd-MM-yyyy HH:mm:ss' }}</td>
             <td>{{mail.status}}</td>
+            <td><button class="btn btn-danger" title="Delete this entry" ng-click="delete($index, $event)">
+                <i class="glyphicon glyphicon-remove"></i></button>
+            </td>
         </tr>
         </tbody>
     </table>

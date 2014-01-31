@@ -8,10 +8,7 @@ angular.module('frontendApp').controller('RawMailInCtrl',
       $scope.loading = false;
     }
 
-    $scope.edit = function (id) {
-      $location.path('/rawMailIn/' + id);
-    };
-
+    /* init */
     $scope.loading = true;
     $scope.rawMails = [];
     RawMailInService.getList().then(
@@ -22,4 +19,18 @@ angular.module('frontendApp').controller('RawMailInCtrl',
       handleError
     );
 
+    /* scope functions */
+    $scope.edit = function (id) {
+      $location.path('/rawMailIn/' + id);
+    };
+
+    $scope.delete = function (index, event) {
+      event.stopPropagation();
+      RawMailInService.deleteItem($scope.rawMails[index].id).then(
+        function ok() {
+          $scope.rawMails.splice(index, 1);
+        },
+        handleError
+      );
+    };
   });
