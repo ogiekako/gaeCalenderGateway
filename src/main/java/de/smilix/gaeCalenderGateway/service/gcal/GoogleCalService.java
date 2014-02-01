@@ -69,23 +69,16 @@ public class GoogleCalService {
   }
 
   // https://developers.google.com/google-apps/calendar/v3/reference/events/list?hl=de
-  public List<Event> getAllEvents(String calendarId, Date since) throws IOException, AuthException {
+  public List<Event> getAllEvents(String calendarId, Date begin, Date end) throws IOException, AuthException {
     Calendar calendarSrv = AuthService.get().loadCalendarClient();
     com.google.api.services.calendar.Calendar.Events.List listRequest = calendarSrv.events().list(calendarId);
     listRequest.setSingleEvents(false);
     //    listRequest.setOrderBy("startTime"); // can't use this with singleEvents false
-    listRequest.setTimeMin(new DateTime(since));
-    //    listRequest.setTimeMin(new DateTime("2013-09-23T16:00:00+02:00"));
+    listRequest.setTimeMin(new DateTime(begin));
+    listRequest.setTimeMax(new DateTime(end));
 
     Events events = listRequest.execute();
     return events.getItems();
-  }
-
-  private void checkEventParameter(IcalInfo event) throws GCCException {
-    nullCheckWithExcpetion(event, "event object is null");
-    nullCheckWithExcpetion(event.getStartTimestamp(), "start time is null");
-    nullCheckWithExcpetion(event.getEndTimestamp(), "end time is null");
-    // todo: more checks
   }
 
   private void nullCheckWithExcpetion(Object objectToCheck, String excpMessage) throws GCCException {
@@ -177,23 +170,6 @@ public class GoogleCalService {
     LOG.info("Event to calendar added, id: " + event.getICalUID());
 
     return result;
-
-    // OLD copy & paste
-
-    // add attendees as description values, because they don't have an email address
-    //    for (String attendeeName : event.getAttendees()) {
-    //      EventWho attendee = new EventWho();
-    //      attendee.setValueString(attendeeName);
-    //      attendee.setRel(Rel.EVENT_ATTENDEE);
-    //      myEntry.addParticipant(attendee);
-    //    }
-    //    StringBuilder description = new StringBuilder();
-    //    for (String attendeeName : event.getAttendees()) {
-    //      description.append(attendeeName).append("\n");
-    //    }
-    //    description.append("------------- DESCRIPTION -------------\n").append(event.getDescription());
-    //    myEntry.setContent(new PlainTextConstruct(description.toString()));
-
   }
 
   private Status removeEvent(Calendar calendarSrv, IcalInfo ical) throws IOException {

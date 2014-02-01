@@ -10,10 +10,19 @@ angular.module('frontendApp').controller('DebugCtrl',
       });
     }
 
+    /* init */
+
     $scope.calendarId = '...';
     $scope.eventList = [];
-    $scope.form = {
-      days: 30
+    $scope.eventListLoading = false;
+
+    $scope.begin = {
+      time: new Date(),
+      open: false
+    };
+    $scope.end = {
+      time: new Date($scope.begin.time.getTime() + DAY_IN_MS * 7),
+      open: false
     };
 
     ConfigService.getConfig().then(
@@ -23,23 +32,28 @@ angular.module('frontendApp').controller('DebugCtrl',
       Utils.handleError
     );
 
+    /* scope functions */
+
+    $scope.openCalendar = function (picker, $event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      picker.open = true;
+    };
+
     $scope.listEvents = function () {
-      if (!$scope.form.days) {
-        return;
-      }
-      console.log('show events for ', $scope.form.days);
+      console.log('show events for ', $scope.begin.time, $scope.end.time);
+      $scope.eventListLoading = true;
 
-      var now = new Date();
-      var nowTrimmed = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      var sinceTs = nowTrimmed.getTime() - ($scope.form.days * DAY_IN_MS);
-
-      DebugService.getEvents(sinceTs).then(
+      DebugService.getEvents($scope.begin.time, $scope.end.time).then(
         function ok(events) {
           addPreviews(events);
           $scope.eventList = events;
         },
         Utils.handleError
-      );
+      ).finally(function () {
+          $scope.eventListLoading = false;
+        });
 
     };
   });

@@ -3,12 +3,21 @@
 angular.module('frontendApp').service('DebugService',
   function ($http, Utils, Config) {
 
-    this.getEvents = function (sinceTs) {
+    /**
+     *
+     * @param {Date} begin
+     * @param {Date} end
+     * @returns {Promise}
+     */
+    this.getEvents = function (begin, end) {
       return Utils.handleResponse(
         $http({
           method: 'GET',
           url: Config.endpointUrl + 'debug/listEvents',
-          params: { since: sinceTs }
+          params: {
+            begin: begin.getTime(),
+            end: end.getTime()
+          }
         }),
         'Error getting event list: ');
     };

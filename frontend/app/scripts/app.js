@@ -3,7 +3,8 @@
 angular.module('frontendApp', [
     'ngAnimate',
     'ngRoute',
-    'ngSanitize'
+    'ngSanitize',
+    'ui.bootstrap'
   ])
   .config([
     '$provide', '$routeProvider',

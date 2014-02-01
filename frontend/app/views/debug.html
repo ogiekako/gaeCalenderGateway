@@ -10,25 +10,34 @@
 </p>
 
 <h3>Calendar</h3>
+
+<h4>Target</h4>
 <p>You can list all events of the calendar used as target. Currently this is <code>{{calendarId}}</code>, you can change this
     <a ng-href="#/config">in the Configuration</a>.
 
+<h4>List events</h4>
+<p>Show all events for the following time range: </p>
 <form class="form" role="form" novalidate>
     <div class="row">
-        <div class="col-xs-3">
-            <label>Show events for the last X days:</label>
+        <div class="col-xs-2">
+            <p class="input-group">
+                <input type="text" class="form-control" datepicker-popup="dd-MM-yyyy" ng-model="begin.time" is-open="begin.open" ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="openCalendar(begin, $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
         </div>
-        <div class="col-xs-1">
-            <input type="number" ng-model="form.days" class="form-control" required/>
+        <div class="col-xs-2">
+            <p class="input-group">
+                <input type="text" class="form-control" datepicker-popup="dd-MM-yyyy" ng-model="end.time" is-open="end.open" ng-required="true" close-text="Close" />
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="openCalendar(end, $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
         </div>
-        <div class="col-xs-3">
-            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 365">Last year</button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 30">Last month</button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="form.days = 7">Last week</button>
-        </div>
+        <button type="submit" class="btn btn-primary" ng-click="listEvents()" ng-disabled="eventListLoading">List events</button>
     </div>
 
-    <button type="submit" class="btn btn-primary" ng-click="listEvents()">List events</button>
 </form>
 
 <table class="table table-hover">
