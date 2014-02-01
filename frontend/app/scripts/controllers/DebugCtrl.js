@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').controller('DebugCtrl',
-  function ($scope, ConfigService, DebugService, Utils) {
+  function ($scope, ConfigService, DebugService, Utils, AppInfo) {
     var DAY_IN_MS = 1000 * 60 * 60 * 24;
 
     function addPreviews(eventData) {
@@ -12,6 +12,7 @@ angular.module('frontendApp').controller('DebugCtrl',
 
     /* init */
 
+    $scope.appId = AppInfo.id;
     $scope.calendarId = '...';
     $scope.eventList = [];
     $scope.eventListLoading = false;

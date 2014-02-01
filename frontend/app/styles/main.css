@@ -3,7 +3,7 @@
 }
 
 /* for angular UI */
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title a { bcursor: pointer; }
 
 /* Space out content a bit */
 body {

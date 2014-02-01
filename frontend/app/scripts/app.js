@@ -12,8 +12,8 @@ angular.module('frontendApp', [
 
       var ensureCredentials = {
         check: [
-          '$q', 'BaseService', 'GlobalError', 'User', 'Version',
-          function ($q, BaseService, GlobalError, User, Version) {
+          '$q', 'BaseService', 'GlobalError', 'User', 'AppInfo',
+          function ($q, BaseService, GlobalError, User, AppInfo) {
             if (User.authValid) {
               return;
             }
@@ -29,8 +29,9 @@ angular.module('frontendApp', [
                 }
                 User.authValid = true;
                 User.userId = result.currentUserId;
-                Version.id = result.version;
-                console.log('setting version', Version);
+                AppInfo.version = result.version;
+                AppInfo.id = result.appId;
+                console.log('setting AppInfo', AppInfo);
                 defer.resolve();
               },
               function fail(msg) {

@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.utils.SystemProperty;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
 import de.smilix.gaeCalenderGateway.common.Version;
@@ -64,6 +65,7 @@ public class BaseResource {
     response.put("valid", hasClientCredentials);
     response.put("currentUserId", userId);
     response.put("version", Version.CURRENT);
+    response.put("appId", SystemProperty.applicationId.get());
     
     return response;
   }
