@@ -31,6 +31,7 @@
 * Everything should build now. 
 
 ## Deploy to App Engine
+* ```cd frontend && npm install && bower install && grunt build```
 * Right click on the project > Google > Deploy to App Engine
 * In one of the following dialogs you are forced to select a WAR Directory. Select here the "webapp" directory. 
 
@@ -41,9 +42,11 @@
     - Enter a contact email address in case of errors
 * Create a filter in your email configuration to forward every email with an event to mailin@$appIdent$.appspotmail.com.
 
+## Develop
+TODO
+
 ## ToOos
 - [ ] Floating message after save/update
-- [ ] make cancelEvent editable
 
 ## Helpful resources
 * Manage application permissions https://plus.google.com/apps?hl=de and https://security.google.com/settings/security/permissions?pli=1
@@ -56,8 +59,7 @@
     - http://wiki.fasterxml.com/JacksonInFiveMinutes
 * JPA in GAE https://developers.google.com/appengine/docs/java/datastore/jpa/overview?hl=de
 * Tasks in GAE https://developers.google.com/appengine/docs/java/taskqueue/overview-push
-* 
-    
+
 
 ## Notes about the refresh token
 
