@@ -28,6 +28,7 @@
         + Check "Use Google App Engine" (again)
     - in "Java Build Path" > "Order and Export" move every "M2_REPO" lib to the bottom
     - Press OK
+* Copy the ```src/main/webapp/WEB-INF/appengine-web.xml.template``` to ```src/main/webapp/WEB-INF/appengine-web.xml``` and insert your $appIdent$ in the "application" node. 
 * Everything should build now. 
 
 ## Deploy to App Engine
