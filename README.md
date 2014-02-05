@@ -2,7 +2,9 @@
 "I wanted to have the Exchange events in my Google calendar"
 
 ## Installation
-* ```git clone <this repo>```
+```git clone <this repo>```
+
+### Account, app and permissions
 * Goto https://appengine.google.com/ and create a new application with the default settings. Remember the application identifier ($appIdent$)
 * Goto https://cloud.google.com/console/project and select your project. 
     - In "APIs & auth" > "APIs" enable "Calendar API", "Google Cloud SQL" (?) and "Google Cloud Storage" (???).
@@ -15,6 +17,8 @@
     https://$appIdent$.appspot.com/oauth2callback
         + Click "Download JSON" and save the file under ```src/main/resources/client_secrets.json```
     - You may change some details in "APIs & auth" > "Consent screen"
+
+### Project setup for Eclipse
 * ```mvn eclipse:eclipse dependency:copy-dependencies``
 * Install Eclipse and the Google App Engine Plugin (https://developers.google.com/appengine/docs/java/tools/eclipse)
 * Import the project in Eclipse
@@ -30,6 +34,13 @@
     - Press OK
 * Copy the ```src/main/webapp/WEB-INF/appengine-web.xml.template``` to ```src/main/webapp/WEB-INF/appengine-web.xml``` and insert your $appIdent$ in the "application" node. 
 * Everything should build now. 
+
+### Project setup for the frontend
+
+    cd frontend
+    npm install
+    bower install 
+    grunt build
 
 ## Deploy to App Engine
 * ```cd frontend && npm install && bower install && grunt build```
