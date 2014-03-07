@@ -1,6 +1,15 @@
 <div class="rawMail-detail">
 
-    <h2>Raw Mails</h2>
+    <h2>Raw Mails
+        <div class="pull-right" ng-if="nextPrevAvailable">
+            <button class="btn btn-default" ng-click="previous()">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button class="btn btn-default" ng-click="next()">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </h2>
 
     <p>You can edit some parts of the raw email here.</p>
 

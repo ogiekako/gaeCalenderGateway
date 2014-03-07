@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').controller('IcalInfoCtrl',
-  function ($scope, $location, GlobalError, IcalInfoService, Utils) {
+  function ($scope, $location, GlobalError, IcalInfoService, SiteDataCache, Utils) {
 
     function handleError(msg) {
       GlobalError.show(msg);
@@ -15,6 +15,7 @@ angular.module('frontendApp').controller('IcalInfoCtrl',
     IcalInfoService.getList().then(
       function ok(list) {
         $scope.list = list;
+        SiteDataCache.iCalList = list;
         $scope.loading = false;
       },
       handleError

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('frontendApp').controller('RawMailInCtrl',
-  function ($scope, $location, GlobalError, RawMailInService, Utils) {
+  function ($scope, $location, GlobalError, RawMailInService, SiteDataCache, Utils) {
 
     function handleError(msg) {
       GlobalError.show(msg);
@@ -14,6 +14,7 @@ angular.module('frontendApp').controller('RawMailInCtrl',
     RawMailInService.getList().then(
       function ok(mailList) {
         $scope.rawMails = mailList;
+        SiteDataCache.rawMailList = mailList;
         $scope.loading = false;
       },
       handleError

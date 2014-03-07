@@ -1,8 +1,18 @@
 <div class="ical-detail">
 
-    <h2>Ical</h2>
+    <h2>Ical
+        <div class="pull-right" ng-if="nextPrevAvailable">
+            <button class="btn btn-default" ng-click="previous()">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button class="btn btn-default" ng-click="next()">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </h2>
 
     <p>You can edit some parts of the parsed event here.</p>
+
     <form class="form-horizontal" role="form">
         <form-entry label="Id"><p class="form-control-static">{{item.id}}</p></form-entry>
         <form-entry label="uId">
@@ -17,14 +27,14 @@
             <input type="text" class="form-control" ng-model="item.summary"/>
         </form-entry>
         <form-entry label="location">
-            <input type="text" class="form-control" ng-model="item.location" />
+            <input type="text" class="form-control" ng-model="item.location"/>
         </form-entry>
         <form-entry label="organizer">
-            <input type="text" class="form-control" ng-model="item.organizer" />
+            <input type="text" class="form-control" ng-model="item.organizer"/>
         </form-entry>
         <form-entry label="attendees">
             <p class="form-control-static">
-                <span ng-repeat="a in item.attendees"><i class="glyphicon glyphicon-user" ></i> {{a.name}} ({{a.email}})  </span>
+                <span ng-repeat="a in item.attendees"><i class="glyphicon glyphicon-user"></i> {{a.name}} ({{a.email}})  </span>
             </p>
         </form-entry>
         <form-entry label="description">
