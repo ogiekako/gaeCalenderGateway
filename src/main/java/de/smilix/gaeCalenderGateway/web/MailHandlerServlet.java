@@ -14,6 +14,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import de.smilix.gaeCalenderGateway.common.Utils;
+import de.smilix.gaeCalenderGateway.model.Config;
 import de.smilix.gaeCalenderGateway.model.RawMailIn;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
 /**
@@ -24,9 +25,13 @@ public class MailHandlerServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-    LOG.fine("Got mail");
+    int contentLength = req.getContentLength();
+    LOG.fine("Got mail, len: " + contentLength);
     
-    String rawData = Utils.streamToString(req.getInputStream());
+    if (contentLength > Config.MAX_INCOMING_MAIL_SIZE) {
+      LOG.warning("The mail is bigger than the allowed value. The mail will be trimmed to the max size. Maybe the resulting mail can't be parsed.");
+    }
+    String rawData = Utils.streamToString(req.getInputStream(), Config.MAX_INCOMING_MAIL_SIZE);
     RawMailIn rawMailIn = new RawMailIn(rawData);
     RawMailInRepository.get().addEntry(rawMailIn);
     

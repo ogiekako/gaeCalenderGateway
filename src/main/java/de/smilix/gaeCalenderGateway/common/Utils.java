@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.Validate;
+
 /**
  * @author Holger Cremer
  */
@@ -42,6 +44,24 @@ public final class Utils {
     byte[] buffer = new byte[2048];
     for (int l; (l = stream.read(buffer)) != -1;) {
       string.append(new String(buffer, 0, l));
+    }
+    return string.toString();
+  }
+  
+  public static String streamToString(InputStream stream, int maxLength) throws IOException {
+    Validate.isTrue(maxLength >= 0, "Invalid max length range. Must >= 0.");
+    StringBuilder string = new StringBuilder();
+    byte[] buffer = new byte[2048];
+    int byteCounter = 0;
+    for (int l; (l = stream.read(buffer)) != -1;) {
+      byteCounter += l;
+      if (byteCounter < maxLength) {
+        string.append(new String(buffer, 0, l));
+      } else {
+        int remainder = maxLength - byteCounter + l;
+        string.append(new String(buffer, 0, remainder));
+        break;
+      }
     }
     return string.toString();
   }

@@ -65,12 +65,6 @@
     <url-pattern>/_ah/mail/*</url-pattern>
   </servlet-mapping>
   
-  <servlet-mapping>
-    <servlet-name>mailhandler</servlet-name>
-    <url-pattern>/debug/mail/*</url-pattern>
-  </servlet-mapping>
-  
-  
   <!-- the task    -->
                   <servlet>
         <servlet-name>processMailWorker</servlet-name>

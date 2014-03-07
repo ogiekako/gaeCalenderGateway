@@ -11,6 +11,10 @@ public class Config {
    */
   public static final String TIME_ZONE = "Europe/Berlin";
   public static final int ALARM_MINUTES = 3;
+  /**
+   * The maximum size of the content of the incoming mail. In bytes. 
+   */
+  public static final int MAX_INCOMING_MAIL_SIZE = 12 * 1000; 
   
   /**
    * There is only one config....
