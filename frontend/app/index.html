@@ -56,15 +56,20 @@
         <div ng-view="" class="content__ng-view"></div>
     </div>
 
-    <div class="footer">
-        <p class="pull-right">gaeCalendarGateway - <show-version /></p>
+    <div class="footer row">
+        <div class="col-md-6">
+            <refresher />
+        </div>
+        <div class="col-md-6 text-right">
+            gaeCalendarGateway - <show-version/>
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
     function findEndpoint() {
         var endpoint = '//' + location.host + '/rest/';
-        endpoint = '//localhost:8888/rest/'; /* replace for debugging, $REMOVE_LINE$*/
+        endpoint = '//localhost:8888/rest/';/* replace for debugging, $REMOVE_LINE$*/
         return endpoint;
     }
     var CONFIG = {
@@ -111,6 +116,7 @@
 <script src="scripts/directives/waitingProgress.js"></script>
 <script src="scripts/directives/navMenu.js"></script>
 <script src="scripts/directives/showVersion.js"></script>
+<script src="scripts/directives/refresher.js"></script>
 <!-- endbuild -->
 </body>
 </html>

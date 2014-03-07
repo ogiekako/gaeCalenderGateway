@@ -3,6 +3,15 @@
 angular.module('frontendApp').service('BaseService',
   function ($http, $q, $log, Config, Utils) {
 
+    this.ping = function () {
+      return Utils.handleResponse(
+        $http({
+          method: 'GET',
+          url: Config.endpointUrl + 'base/ping'
+        }),
+        'Error ping: ');
+    };
+
     this.getStats = function () {
       return Utils.handleResponse(
         $http({
