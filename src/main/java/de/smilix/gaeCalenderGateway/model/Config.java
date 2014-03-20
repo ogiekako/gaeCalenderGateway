@@ -14,7 +14,7 @@ public class Config {
   /**
    * The maximum size of the content of the incoming mail. In bytes. 
    */
-  public static final int MAX_INCOMING_MAIL_SIZE = 12 * 1000; 
+  public static final int MAX_INCOMING_MAIL_SIZE = 512 * 1000; 
   
   /**
    * There is only one config....
