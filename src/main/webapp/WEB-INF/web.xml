@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+  <filter>
+    <filter-name>corsFilter</filter-name>
+    <filter-class>de.smilix.gaeCalenderGateway.web.CORSHeaderFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>corsFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+
+
   <!-- 
     Restrict the access to everything to the role admin. 
     With this role only the registered developer can access this app. 
