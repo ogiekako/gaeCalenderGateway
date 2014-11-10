@@ -1,5 +1,5 @@
 package de.smilix.gaeCalenderGateway.common;
 
 public class Version {
-  public static final String CURRENT = "1.7.2";
+  public static final String CURRENT = "1.8.0";
 }

@@ -1,6 +1,7 @@
 package de.smilix.gaeCalenderGateway.web.rest;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,11 +14,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
+
 import de.smilix.gaeCalenderGateway.model.RawMailIn;
 import de.smilix.gaeCalenderGateway.service.data.RawMailInRepository;
+import de.smilix.gaeCalenderGateway.web.MailHandlerServlet;
+
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 @Path("/rawMailIn")
 public class RawMailInResource {
+  
+  private static final Logger LOG = Logger.getLogger(RawMailInResource.class.getName());
 
   @GET
   @Path("/list")
@@ -54,6 +64,12 @@ public class RawMailInResource {
     mail.setStatus(rawMailIn.getStatus());
     mail.setRawMail(rawMailIn.getRawMail());
     RawMailInRepository.get().merge(mail);
+    
+    if (rawMailIn.getStatus() == RawMailIn.Status.INCOMING) {
+      LOG.info("Add raw mail again to queue (because of new status incoming): " + rawMailIn.getId().toString());
+      Queue queue = QueueFactory.getDefaultQueue();
+      queue.add(withUrl("/tasks/processMailWorker").method(Method.GET).param("id", rawMailIn.getId().toString()));
+    }
 
     return Response.ok().build();
   }
