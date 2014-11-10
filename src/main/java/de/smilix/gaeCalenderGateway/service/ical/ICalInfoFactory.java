@@ -44,14 +44,10 @@ public class ICalInfoFactory {
     return instance;
   }
 
-  private CalendarBuilder builder;
-
   private ICalInfoFactory() {
     CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
     CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
     CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
-
-    this.builder = new CalendarBuilder();
   }
 
   /**
@@ -67,9 +63,10 @@ public class ICalInfoFactory {
       throw new NullPointerException("The iCalData must not be null.");
     }
 
+    CalendarBuilder builder = new CalendarBuilder();
     Calendar calendar;
     try {
-      calendar = this.builder.build(new StringReader(iCalData));
+      calendar = builder.build(new StringReader(iCalData));
     } catch (IOException excp) {
       throw new InvalidFormatException("IO problems during  parsing: " + excp.getMessage(), excp);
     } catch (ParserException excp) {
