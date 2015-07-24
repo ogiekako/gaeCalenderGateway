@@ -201,6 +201,11 @@ public class GoogleCalService {
     list.setICalUID(event.getICalUID());
     List<Event> eventsList = list.execute().getItems();
     if (eventsList.size() != 1) {
+      // log all the problematic events 
+      for (Event anEvent : eventsList) {
+        LOG.info("Found event: " + anEvent.toPrettyString());
+      }
+      
       throw new IllegalStateException("Tried to get the event for the duplicated event (icalUid: " + event.getICalUID()
               + "), but got this amount of event: " + eventsList.size());
     }
